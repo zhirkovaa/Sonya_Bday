@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>День Рождения Сони 🎂</title>
+<style>
+:root {
+  --pink: #f472b6;
+  --pink-light: #fce7f3;
+  --pink-dark: #db2777;
+  --purple: #a78bfa;
+  --purple-light: #ede9fe;
+  --bg: #fdf2f8;
+  --card: #ffffff;
+  --text: #1e1e2e;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--pink), var(--purple));
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+}
+.header h1 { font-size: 2rem; margin-bottom: 0.25rem; }
+.header p { opacity: 0.9; font-size: 1.1rem; }
+
+.tabs {
+  display: flex;
+  background: var(--card);
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.tab {
+  flex: 1;
+  min-width: max-content;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab.active {
+  color: var(--pink-dark);
+  border-bottom-color: var(--pink-dark);
+  background: var(--pink-light);
+}
+.tab:hover { background: var(--pink-light); }
+
+.page { display: none; padding: 1rem; max-width: 800px; margin: 0 auto; }
+.page.active { display: block; }
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.card h2 { font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--pink-dark); }
+.card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  margin-bottom: 0.5rem;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 0 3px rgba(244,114,182,0.15);
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.btn-primary {
+  background: var(--pink-dark);
+  color: white;
+}
+.btn-primary:hover { background: #be185d; }
+.btn-secondary {
+  background: var(--purple-light);
+  color: #6d28d9;
+}
+.btn-secondary:hover { background: #ddd6fe; }
+.btn-danger {
+  background: #fee2e2;
+  color: var(--danger);
+}
+.btn-danger:hover { background: #fecaca; }
+.btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-pink { background: var(--pink-light); color: var(--pink-dark); }
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-purple { background: var(--purple-light); color: #6d28d9; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+th, td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+th { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+
+.guest-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.guest-row > * { flex-shrink: 0; }
+
+.allergen-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem; }
+.allergen-tag {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+}
+
+.agenda-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.agenda-item:last-child { border-bottom: none; }
+.agenda-time {
+  font-weight: 700;
+  color: var(--pink-dark);
+  min-width: 60px;
+}
+
+.wishlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.wishlist-item.booked {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+.wishlist-info { flex: 1; }
+.wishlist-info a { color: var(--pink-dark); text-decoration: none; }
+.wishlist-info a:hover { text-decoration: underline; }
+.wishlist-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+
+.location-map {
+  background: var(--purple-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  text-align: center;
+}
+.location-map a { color: var(--pink-dark); font-weight: 600; }
+
+.form-row { display: flex; gap: 0.5rem; align-items: flex-start; }
+.form-row > * { flex: 1; }
+.form-row > .btn-primary { flex: none; margin-top: 0; }
+
+.checklist-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+.checklist-item input[type="checkbox"] { width: auto; margin: 0; }
+.checklist-item.done label { text-decoration: line-through; color: var(--text-muted); }
+
+.sibling-group {
+  background: var(--purple-light);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .header h1 { font-size: 1.5rem; }
+  .tabs { font-size: 0.8rem; }
+  .tab { padding: 0.6rem 0.5rem; font-size: 0.8rem; }
+  .form-row { flex-direction: column; }
+  .wishlist-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+  .wishlist-actions { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎈 День Рождения Сони! 🎈</h1>
+  <p>Добро пожаловать на страничку праздника</p>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('agenda')">📋 Агенда</button>
+  <button class="tab" onclick="showTab('location')">📍 Локация</button>
+  <button class="tab" onclick="showTab('guests')">👨‍👩‍👧 Гости</button>
+  <button class="tab" onclick="showTab('wishlist')">🎁 Виш-лист</button>
+  <button class="tab" onclick="showTab('org')">🔧 Организация</button>
+</div>
+
+<!-- AGENDA -->
+<div id="agenda" class="page active">
+  <div class="card">
+    <h2>📋 Программа праздника</h2>
+    <div id="agenda-list"></div>
+  </div>
+  <div class="card">
+    <h3>Добавить пункт</h3>
+    <div class="form-row">
+      <input type="time" id="agenda-time" />
+      <input type="text" id="agenda-desc" placeholder="Описание" />
+      <button class="btn-primary" onclick="addAgendaItem()">+</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOCATION -->
+<div id="location" class="page">
+  <div class="card">
+    <h2>📍 Локация</h2>
+    <div class="location-map">
+      <h3>Philips Fruittuin</h3>
+      <p style="margin: 0.75rem 0; color: var(--text-muted);">
+        Fruittuin van West, Amsterdam
+      </p>
+      <a href="https://maps.google.com/?q=Philips+Fruittuin+Amsterdam" target="_blank">
+        📍 Открыть в Google Maps
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- GUESTS -->
+<div id="guests" class="page">
+  <div class="card">
+    <h2>👨‍👩‍👧 Родители Сони и друзья</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Организаторы и взрослые гости без детей</p>
+    <div id="hosts-list"></div>
+    <div class="form-row" style="margin-top: 0.5rem;">
+      <input type="text" id="host-name" placeholder="Имя" />
+      <select id="host-role" style="max-width: 160px;">
+        <option value="parent">Родитель Сони</option>
+        <option value="friend">Друг семьи</option>
+      </select>
+      <button class="btn-primary" onclick="addHost()">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🧒 Приглашённые дети</h2>
+    <div id="children-list"></div>
+    <div class="form-row" style="margin-top: 0.5rem;">
+      <input type="text" id="child-name" placeholder="Имя ребёнка" />
+      <button class="btn-primary" onclick="addChild()">+ Ребёнок</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>👨‍👩‍👧 Родители гостей</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Родители могут добавить себя и указать аллергены ребёнка</p>
+    <div id="parents-list"></div>
+    <div style="margin-top: 0.5rem;">
+      <div class="form-row">
+        <input type="text" id="parent-name" placeholder="Имя родителя" />
+        <select id="parent-child" style="max-width: 200px;">
+          <option value="">Выберите ребёнка...</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin-top: 0;">
+        <input type="text" id="parent-allergens" placeholder="Аллергены (через запятую, напр.: свинина, орехи)" />
+        <button class="btn-primary" onclick="addParent()">+ Родитель</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>👫 Группы сиблингов (один подарок)</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Объедините братьев/сестёр для общего подарка</p>
+    <div id="sibling-groups"></div>
+    <div class="form-row" style="margin-top: 0.5rem;">
+      <select id="sibling-select" multiple style="min-height: 60px;">
+      </select>
+      <button class="btn-primary" onclick="createSiblingGroup()">Объединить</button>
+    </div>
+  </div>
+</div>
+
+<!-- WISHLIST -->
+<div id="wishlist" class="page">
+  <div class="card">
+    <h2>🎁 Виш-лист</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
+      Забронируйте подарок, чтобы он не повторился. Сиблинги дарят один подарок на группу.
+    </p>
+    <div id="wishlist-items"></div>
+  </div>
+  <div class="card">
+    <h3>Добавить подарок в виш-лист</h3>
+    <input type="text" id="wish-name" placeholder="Название подарка" />
+    <input type="url" id="wish-url" placeholder="Ссылка (необязательно)" />
+    <input type="text" id="wish-note" placeholder="Примечание (необязательно)" />
+    <button class="btn-primary" onclick="addWish()">Добавить</button>
+  </div>
+</div>
+
+<!-- ORGANIZATION -->
+<div id="org" class="page">
+  <div class="card">
+    <h2>🔧 Организация праздника</h2>
+    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
+      Только для организаторов
+    </p>
+    <div id="org-tasks"></div>
+    <div class="form-row" style="margin-top: 0.75rem;">
+      <input type="text" id="org-task" placeholder="Новая задача" />
+      <select id="org-assignee" style="max-width: 160px;">
+        <option value="">Кто?</option>
+      </select>
+      <button class="btn-primary" onclick="addOrgTask()">+</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>💬 Заметки</h2>
+    <textarea id="org-notes" rows="5" placeholder="Общие заметки по организации..." oninput="saveOrgNotes()"></textarea>
+  </div>
+</div>
+
+<script>
+const LS_KEY = 'sonya_bday_';
+function load(key, def) {
+  try { return JSON.parse(localStorage.getItem(LS_KEY + key)) || def; }
+  catch { return def; }
+}
+function save(key, val) { localStorage.setItem(LS_KEY + key, JSON.stringify(val)); }
+
+let data = {
+  agenda: load('agenda', [
+    { time: '14:00', desc: 'Сбор гостей' },
+    { time: '14:30', desc: 'Игры и развлечения' },
+    { time: '15:30', desc: 'Торт и поздравления' },
+    { time: '16:00', desc: 'Свободное время' },
+    { time: '17:00', desc: 'Окончание праздника' },
+  ]),
+  hosts: load('hosts', [
+    { name: 'Аня', role: 'parent' },
+    { name: 'Саша', role: 'parent' },
+  ]),
+  children: load('children', []),
+  parents: load('parents', []),
+  siblingGroups: load('siblingGroups', []),
+  wishlist: load('wishlist', []),
+  orgTasks: load('orgTasks', []),
+  orgNotes: load('orgNotes', ''),
+};
+
+function saveAll() {
+  for (let k of Object.keys(data)) save(k, data[k]);
+}
+
+function showTab(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  render();
+}
+
+function render() {
+  renderAgenda();
+  renderHosts();
+  renderChildren();
+  renderParents();
+  renderSiblingGroups();
+  renderWishlist();
+  renderOrg();
+  updateSelects();
+}
+
+function renderAgenda() {
+  const el = document.getElementById('agenda-list');
+  if (!data.agenda.length) { el.innerHTML = '<p style="color:var(--text-muted)">Пока нет пунктов</p>'; return; }
+  el.innerHTML = data.agenda
+    .sort((a, b) => a.time.localeCompare(b.time))
+    .map((item, i) => `
+      <div class="agenda-item">
+        <span class="agenda-time">${item.time}</span>
+        <span style="flex:1">${esc(item.desc)}</span>
+        <button class="btn-danger btn-sm" onclick="removeAgenda(${i})">✕</button>
+      </div>
+    `).join('');
+}
+
+function addAgendaItem() {
+  const time = document.getElementById('agenda-time').value;
+  const desc = document.getElementById('agenda-desc').value.trim();
+  if (!time || !desc) return;
+  data.agenda.push({ time, desc });
+  saveAll(); render();
+  document.getElementById('agenda-time').value = '';
+  document.getElementById('agenda-desc').value = '';
+}
+
+function removeAgenda(i) {
+  data.agenda.splice(i, 1);
+  saveAll(); render();
+}
+
+function renderHosts() {
+  const el = document.getElementById('hosts-list');
+  el.innerHTML = data.hosts.map((h, i) => `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">
+      <span class="badge ${h.role === 'parent' ? 'badge-pink' : 'badge-purple'}">
+        ${h.role === 'parent' ? 'Родитель' : 'Друг'}
+      </span>
+      <span>${esc(h.name)}</span>
+      <button class="btn-danger btn-sm" onclick="removeHost(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function addHost() {
+  const name = document.getElementById('host-name').value.trim();
+  const role = document.getElementById('host-role').value;
+  if (!name) return;
+  data.hosts.push({ name, role });
+  saveAll(); render();
+  document.getElementById('host-name').value = '';
+}
+
+function removeHost(i) { data.hosts.splice(i, 1); saveAll(); render(); }
+
+function renderChildren() {
+  const el = document.getElementById('children-list');
+  el.innerHTML = data.children.map((c, i) => {
+    const ps = data.parents.filter(p => p.childIndex === i);
+    const allergens = ps.flatMap(p => p.allergens).filter(Boolean);
+    return `
+      <div style="padding:0.4rem 0;border-bottom:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <strong>${esc(c.name)}</strong>
+          ${ps.length ? '<span style="color:var(--text-muted);font-size:0.85rem;">← ' + ps.map(p=>esc(p.name)).join(', ') + '</span>' : ''}
+          <button class="btn-danger btn-sm" onclick="removeChild(${i})">✕</button>
+        </div>
+        ${allergens.length ? '<div class="allergen-tags">' + allergens.map(a => `<span class="allergen-tag">⚠️ ${esc(a)}</span>`).join('') + '</div>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function addChild() {
+  const name = document.getElementById('child-name').value.trim();
+  if (!name) return;
+  data.children.push({ name });
+  saveAll(); render();
+  document.getElementById('child-name').value = '';
+}
+
+function removeChild(i) {
+  data.parents = data.parents.filter(p => p.childIndex !== i)
+    .map(p => ({ ...p, childIndex: p.childIndex > i ? p.childIndex - 1 : p.childIndex }));
+  data.siblingGroups = data.siblingGroups
+    .map(g => g.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx))
+    .filter(g => g.length > 1);
+  data.children.splice(i, 1);
+  saveAll(); render();
+}
+
+function renderParents() {
+  const el = document.getElementById('parents-list');
+  el.innerHTML = data.parents.map((p, i) => `
+    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;flex-wrap:wrap;">
+      <span>${esc(p.name)}</span>
+      <span style="color:var(--text-muted);font-size:0.85rem;">→ ${data.children[p.childIndex]?.name || '?'}</span>
+      ${p.allergens.length ? p.allergens.map(a => `<span class="allergen-tag">⚠️ ${esc(a)}</span>`).join('') : ''}
+      <button class="btn-danger btn-sm" onclick="removeParent(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+function addParent() {
+  const name = document.getElementById('parent-name').value.trim();
+  const childIndex = parseInt(document.getElementById('parent-child').value);
+  const allergens = document.getElementById('parent-allergens').value
+    .split(',').map(s => s.trim()).filter(Boolean);
+  if (!name || isNaN(childIndex)) return;
+  data.parents.push({ name, childIndex, allergens });
+  saveAll(); render();
+  document.getElementById('parent-name').value = '';
+  document.getElementById('parent-allergens').value = '';
+}
+
+function removeParent(i) { data.parents.splice(i, 1); saveAll(); render(); }
+
+function renderSiblingGroups() {
+  const el = document.getElementById('sibling-groups');
+  el.innerHTML = data.siblingGroups.map((g, i) => `
+    <div class="sibling-group">
+      👫 ${g.map(idx => esc(data.children[idx]?.name || '?')).join(' + ')}
+      <button class="btn-danger btn-sm" onclick="removeSiblingGroup(${i})" style="margin-left:0.5rem;">✕</button>
+    </div>
+  `).join('');
+}
+
+function createSiblingGroup() {
+  const sel = document.getElementById('sibling-select');
+  const indices = Array.from(sel.selectedOptions).map(o => parseInt(o.value));
+  if (indices.length < 2) return;
+  data.siblingGroups.push(indices);
+  saveAll(); render();
+}
+
+function removeSiblingGroup(i) { data.siblingGroups.splice(i, 1); saveAll(); render(); }
+
+function getGiftGivers() {
+  const givers = [];
+  const inGroup = new Set(data.siblingGroups.flat());
+  data.children.forEach((c, i) => {
+    if (!inGroup.has(i)) {
+      givers.push({ label: c.name, type: 'child', indices: [i] });
+    }
+  });
+  data.siblingGroups.forEach((g, i) => {
+    const names = g.map(idx => data.children[idx]?.name || '?').join(' + ');
+    givers.push({ label: names, type: 'group', indices: g });
+  });
+  data.hosts.filter(h => h.role === 'friend').forEach(h => {
+    givers.push({ label: h.name, type: 'friend', indices: [] });
+  });
+  return givers;
+}
+
+function renderWishlist() {
+  const el = document.getElementById('wishlist-items');
+  const givers = getGiftGivers();
+  el.innerHTML = data.wishlist.map((w, i) => {
+    const booked = w.bookedBy != null;
+    const bookerLabel = booked ? (typeof w.bookedBy === 'string' ? w.bookedBy : givers[w.bookedBy]?.label || '?') : '';
+    return `
+      <div class="wishlist-item ${booked ? 'booked' : ''}">
+        <div class="wishlist-info">
+          <strong>${w.url ? `<a href="${esc(w.url)}" target="_blank">${esc(w.name)}</a>` : esc(w.name)}</strong>
+          ${w.note ? `<div style="font-size:0.85rem;color:var(--text-muted);">${esc(w.note)}</div>` : ''}
+          ${booked ? `<div><span class="badge badge-green">🎁 Забронировано: ${esc(bookerLabel)}</span></div>` : ''}
+        </div>
+        <div class="wishlist-actions">
+          ${!booked ? `
+            <select onchange="bookWish(${i}, this.value)" style="width:auto;margin:0;">
+              <option value="">Забронировать...</option>
+              ${givers.map((g, gi) => `<option value="${gi}">${esc(g.label)}</option>`).join('')}
+              <option value="__custom">Другой...</option>
+            </select>
+          ` : `
+            <button class="btn-secondary btn-sm" onclick="unbookWish(${i})">Отменить</button>
+          `}
+          <button class="btn-danger btn-sm" onclick="removeWish(${i})">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('') || '<p style="color:var(--text-muted)">Виш-лист пуст</p>';
+}
+
+function addWish() {
+  const name = document.getElementById('wish-name').value.trim();
+  const url = document.getElementById('wish-url').value.trim();
+  const note = document.getElementById('wish-note').value.trim();
+  if (!name) return;
+  data.wishlist.push({ name, url, note, bookedBy: null });
+  saveAll(); render();
+  document.getElementById('wish-name').value = '';
+  document.getElementById('wish-url').value = '';
+  document.getElementById('wish-note').value = '';
+}
+
+function bookWish(i, val) {
+  if (val === '__custom') {
+    const name = prompt('Введите имя:');
+    if (name) { data.wishlist[i].bookedBy = name; saveAll(); render(); }
+    return;
+  }
+  if (val === '') return;
+  data.wishlist[i].bookedBy = parseInt(val);
+  saveAll(); render();
+}
+
+function unbookWish(i) { data.wishlist[i].bookedBy = null; saveAll(); render(); }
+function removeWish(i) { data.wishlist.splice(i, 1); saveAll(); render(); }
+
+function renderOrg() {
+  const hosts = data.hosts.filter(h => h.role === 'parent' || h.role === 'friend');
+  const el = document.getElementById('org-tasks');
+  el.innerHTML = data.orgTasks.map((t, i) => `
+    <div class="checklist-item ${t.done ? 'done' : ''}">
+      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOrgTask(${i})" style="width:auto;">
+      <label>${esc(t.task)}</label>
+      ${t.assignee ? `<span class="badge badge-purple">${esc(t.assignee)}</span>` : ''}
+      <button class="btn-danger btn-sm" onclick="removeOrgTask(${i})">✕</button>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted)">Нет задач</p>';
+
+  const sel = document.getElementById('org-assignee');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Кто?</option>' +
+    hosts.map(h => `<option value="${esc(h.name)}">${esc(h.name)}</option>`).join('');
+  sel.value = current;
+
+  document.getElementById('org-notes').value = data.orgNotes;
+}
+
+function addOrgTask() {
+  const task = document.getElementById('org-task').value.trim();
+  const assignee = document.getElementById('org-assignee').value;
+  if (!task) return;
+  data.orgTasks.push({ task, assignee, done: false });
+  saveAll(); render();
+  document.getElementById('org-task').value = '';
+}
+
+function toggleOrgTask(i) { data.orgTasks[i].done = !data.orgTasks[i].done; saveAll(); render(); }
+function removeOrgTask(i) { data.orgTasks.splice(i, 1); saveAll(); render(); }
+function saveOrgNotes() { data.orgNotes = document.getElementById('org-notes').value; save('orgNotes', data.orgNotes); }
+
+function updateSelects() {
+  const childSel = document.getElementById('parent-child');
+  const current = childSel.value;
+  childSel.innerHTML = '<option value="">Выберите ребёнка...</option>' +
+    data.children.map((c, i) => `<option value="${i}">${esc(c.name)}</option>`).join('');
+  childSel.value = current;
+
+  const sibSel = document.getElementById('sibling-select');
+  sibSel.innerHTML = data.children.map((c, i) => `<option value="${i}">${esc(c.name)}</option>`).join('');
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+render();
+</script>
+</body>
+</html>
