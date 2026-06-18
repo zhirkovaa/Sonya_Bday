@@ -342,28 +342,77 @@ button {
   <button class="btn-outline" onclick="goStep('wishlist')" style="width:100%;margin-top:0.5rem;" id="t-back-wishlist"></button>
 </div>
 
-<!-- ADMIN: Organization tab -->
+<!-- ADMIN: Login -->
+<div id="step-admin-login" class="step">
+  <div class="card" style="text-align:center;">
+    <h2>🔐 Admin</h2>
+    <input type="password" id="admin-pass" placeholder="Пароль" onkeydown="if(event.key==='Enter')checkAdminPass()" />
+    <button class="btn-primary" onclick="checkAdminPass()" style="width:100%;">Войти</button>
+    <p id="admin-error" style="color:var(--danger);font-size:0.85rem;margin-top:0.5rem;display:none;">Неверный пароль</p>
+  </div>
+</div>
+
+<!-- ADMIN: Dashboard -->
 <div id="step-org" class="step">
   <div class="card">
-    <h2>🔧 Organization</h2>
+    <h2>📊 Обзор</h2>
+    <div id="admin-stats" style="display:flex;gap:0.75rem;flex-wrap:wrap;"></div>
+  </div>
+
+  <div class="card">
+    <h2>👨‍👩‍👧‍👦 Все гости</h2>
+    <div id="all-registrations"></div>
+  </div>
+
+  <div class="card">
+    <h2>⚠️ Все аллергены</h2>
+    <div id="all-allergens"></div>
+  </div>
+
+  <div class="card">
+    <h2>🎁 Подарки</h2>
+    <div id="admin-gifts"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Агенда (редактирование)</h2>
+    <div id="admin-agenda-list"></div>
+    <div class="form-row" style="margin-top:0.5rem;">
+      <input type="time" id="admin-agenda-time" />
+      <input type="text" id="admin-agenda-desc" placeholder="Описание" />
+      <button class="btn-primary" onclick="adminAddAgenda()">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔧 Задачи</h2>
     <div id="org-tasks"></div>
     <div class="form-row" style="margin-top:0.75rem;">
-      <input type="text" id="org-task" placeholder="New task" />
+      <input type="text" id="org-task" placeholder="Новая задача" />
       <select id="org-assignee" style="max-width:160px;">
-        <option value="">Who?</option>
+        <option value="">Кто?</option>
       </select>
       <button class="btn-primary" onclick="addOrgTask()">+</button>
     </div>
   </div>
+
   <div class="card">
-    <h2>💬 Notes</h2>
-    <textarea id="org-notes" rows="5" placeholder="Notes..." oninput="saveOrgNotes()"></textarea>
+    <h2>💬 Заметки</h2>
+    <textarea id="org-notes" rows="5" placeholder="Заметки..." oninput="saveOrgNotes()"></textarea>
   </div>
+
   <div class="card">
-    <h2>📋 Registrations</h2>
-    <div id="all-registrations"></div>
+    <h2>🎁 Управление виш-листом</h2>
+    <div id="admin-wishlist-manage"></div>
+    <div style="margin-top:0.75rem;">
+      <input type="text" id="admin-wish-name" placeholder="Название подарка" />
+      <input type="url" id="admin-wish-url" placeholder="Ссылка (необязательно)" />
+      <input type="text" id="admin-wish-note" placeholder="Примечание (необязательно)" />
+      <button class="btn-primary" onclick="adminAddWish()" style="width:100%;">Добавить подарок</button>
+    </div>
   </div>
-  <button class="btn-outline" onclick="toggleAdmin()" style="width:100%;margin-top:0.5rem;">← Back</button>
+
+  <button class="btn-outline" onclick="toggleAdmin()" style="width:100%;margin-top:0.5rem;">← Выйти из админки</button>
 </div>
 
 <script>
@@ -539,7 +588,7 @@ function goStep(id) {
 
 function renderProgress() {
   const bar = document.getElementById('progress-bar');
-  if (currentStep === 'lang' || currentStep === 'org') { bar.innerHTML = ''; return; }
+  if (currentStep === 'lang' || currentStep === 'org' || currentStep === 'admin-login') { bar.innerHTML = ''; return; }
   const steps = STEPS.filter(s => s !== 'lang');
   const idx = steps.indexOf(currentStep);
   bar.innerHTML = steps.map((s, i) =>
@@ -832,19 +881,127 @@ function renderSummary() {
   el.innerHTML = html;
 }
 
+const ADMIN_PIN = 'sonya2026';
+
 function toggleAdmin() {
   if (currentStep === 'org') {
     isAdmin = false; save('admin', false);
     goStep(lang ? 'children' : 'lang');
+    document.getElementById('admin-btn').textContent = '⚙️';
+  } else if (isAdmin) {
+    goStep('org');
   } else {
-    isAdmin = !isAdmin; save('admin', isAdmin);
-    if (isAdmin) goStep('org');
-    else renderAll();
+    goStep('admin-login');
   }
-  document.getElementById('admin-btn').textContent = isAdmin ? '⚙️ ✓' : '⚙️';
+}
+
+function checkAdminPass() {
+  const pass = document.getElementById('admin-pass').value;
+  if (pass === ADMIN_PIN) {
+    isAdmin = true; save('admin', true);
+    document.getElementById('admin-error').style.display = 'none';
+    document.getElementById('admin-pass').value = '';
+    document.getElementById('admin-btn').textContent = '⚙️ ✓';
+    goStep('org');
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+  }
 }
 
 function renderOrg() {
+  // Stats
+  const totalChildren = data.registrations.reduce((s, r) => s + r.children.length, 0);
+  const totalParents = data.registrations.reduce((s, r) => s + r.parents.length, 0);
+  const totalFamilies = data.registrations.length;
+  const bookedGifts = data.wishlist.filter(w => w.bookedBy != null).length;
+  const statsEl = document.getElementById('admin-stats');
+  statsEl.innerHTML = [
+    {n: totalFamilies, l: '👨‍👩‍👧 Семей'},
+    {n: totalChildren, l: '🧒 Детей'},
+    {n: totalParents, l: '👤 Родителей'},
+    {n: totalChildren + totalParents, l: '👥 Всего гостей'},
+    {n: bookedGifts + '/' + data.wishlist.length, l: '🎁 Подарков'},
+  ].map(s => `<div style="background:var(--pink-light);border-radius:10px;padding:0.75rem 1rem;text-align:center;min-width:90px;">
+    <div style="font-size:1.4rem;font-weight:700;color:var(--pink-dark);">${s.n}</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);">${s.l}</div>
+  </div>`).join('');
+
+  // Registrations
+  const regEl = document.getElementById('all-registrations');
+  regEl.innerHTML = data.registrations.map((r, ri) => {
+    const gift = data.wishlist.find(w => w.bookedByFamily === r.familyId);
+    return `
+    <div class="person-card">
+      <div class="person-header">
+        <strong>👨‍👩‍👧 ${[...r.parents.map(p=>p.name),...r.children.map(c=>c.name)].join(', ')}</strong>
+        <span class="badge badge-purple">${new Date(r.timestamp).toLocaleDateString()}</span>
+      </div>
+      ${r.children.map(c => `<div style="font-size:0.85rem;">🧒 ${esc(c.name)}${c.allergens.length ? ' — <span style="color:#92400e;">⚠️ ' + c.allergens.map(esc).join(', ') + '</span>' : ''}</div>`).join('')}
+      ${r.parents.map(p => `<div style="font-size:0.85rem;">👤 ${esc(p.name)}${p.allergens.length ? ' — <span style="color:#92400e;">⚠️ ' + p.allergens.map(esc).join(', ') + '</span>' : ''}</div>`).join('')}
+      ${gift ? `<div style="font-size:0.85rem;">🎁 ${esc(gift.name)}</div>` : ''}
+      ${r.photo ? `<img src="${r.photo}" style="max-width:80px;border-radius:6px;margin-top:0.3rem;">` : ''}
+      <button class="btn-danger btn-sm" onclick="removeRegistration(${ri})" style="margin-top:0.3rem;">Удалить</button>
+    </div>`;
+  }).join('') || '<p style="color:var(--text-muted)">Пока нет регистраций</p>';
+
+  // Allergen summary
+  const allergenMap = {};
+  data.registrations.forEach(r => {
+    [...r.children, ...r.parents].forEach(p => {
+      p.allergens.forEach(a => {
+        if (!allergenMap[a]) allergenMap[a] = [];
+        allergenMap[a].push(p.name);
+      });
+    });
+  });
+  const allergenEl = document.getElementById('all-allergens');
+  const allergenKeys = Object.keys(allergenMap);
+  allergenEl.innerHTML = allergenKeys.length ? allergenKeys.map(a =>
+    `<div style="margin-bottom:0.4rem;">
+      <span class="allergen-tag" style="font-size:0.85rem;">⚠️ ${esc(a)}</span>
+      <span style="font-size:0.85rem;color:var(--text-muted);"> — ${allergenMap[a].map(esc).join(', ')}</span>
+    </div>`
+  ).join('') : '<p style="color:var(--text-muted)">Нет аллергенов</p>';
+
+  // Gifts overview
+  const giftsEl = document.getElementById('admin-gifts');
+  giftsEl.innerHTML = data.wishlist.map(w => {
+    const booked = w.bookedBy != null;
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border);">
+      <span>${esc(w.name)}</span>
+      ${booked ? `<span class="badge badge-green">✓ ${esc(w.bookedBy)}</span>` : '<span class="badge badge-pink">Свободен</span>'}
+    </div>`;
+  }).join('') || '<p style="color:var(--text-muted)">Виш-лист пуст</p>';
+
+  // Admin agenda
+  const agendaEl = document.getElementById('admin-agenda-list');
+  const sorted = [...data.agenda].sort((a,b) => a.time.localeCompare(b.time));
+  agendaEl.innerHTML = sorted.map((item, i) => {
+    const desc = typeof item.desc === 'object' ? (item.desc.ru || item.desc.en || Object.values(item.desc)[0] || '') : item.desc;
+    return `<div class="agenda-item">
+      <span class="agenda-time">${item.time}</span>
+      <span style="flex:1">${esc(desc)}</span>
+      <button class="btn-danger btn-sm" onclick="removeAgenda(${data.agenda.indexOf(item)})">✕</button>
+    </div>`;
+  }).join('');
+
+  // Admin wishlist manage
+  const wlManage = document.getElementById('admin-wishlist-manage');
+  wlManage.innerHTML = data.wishlist.map((w, i) => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0;border-bottom:1px solid var(--border);">
+      <div>
+        <strong>${esc(w.name)}</strong>
+        ${w.url ? `<a href="${esc(w.url)}" target="_blank" style="font-size:0.8rem;margin-left:0.3rem;">🔗</a>` : ''}
+        ${w.bookedBy ? ` <span class="badge badge-green">${esc(w.bookedBy)}</span>` : ''}
+      </div>
+      <div style="display:flex;gap:0.25rem;">
+        ${w.bookedBy ? `<button class="btn-secondary btn-sm" onclick="unbookWish(${i});renderOrg();">Разбронировать</button>` : ''}
+        <button class="btn-danger btn-sm" onclick="removeWish(${i});renderOrg();">✕</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:var(--text-muted)">Пусто</p>';
+
+  // Tasks
   const el = document.getElementById('org-tasks');
   el.innerHTML = data.orgTasks.map((t_, i) => `
     <div class="checklist-item ${t_.done ? 'done' : ''}">
@@ -853,18 +1010,36 @@ function renderOrg() {
       ${t_.assignee ? `<span class="badge badge-purple">${esc(t_.assignee)}</span>` : ''}
       <button class="btn-danger btn-sm" onclick="removeOrgTask(${i})">✕</button>
     </div>
-  `).join('') || '<p style="color:var(--text-muted)">No tasks</p>';
-  document.getElementById('org-notes').value = data.orgNotes;
+  `).join('') || '<p style="color:var(--text-muted)">Нет задач</p>';
 
-  const regEl = document.getElementById('all-registrations');
-  regEl.innerHTML = data.registrations.map(r => `
-    <div class="person-card">
-      <strong>${t('family')}: ${[...r.parents.map(p=>p.name),...r.children.map(c=>c.name)].join(', ')}</strong>
-      ${r.children.map(c => `<div style="font-size:0.85rem;">🧒 ${esc(c.name)}${c.allergens.length ? ' ⚠️ ' + c.allergens.join(', ') : ''}</div>`).join('')}
-      ${r.parents.map(p => `<div style="font-size:0.85rem;">👤 ${esc(p.name)}${p.allergens.length ? ' ⚠️ ' + p.allergens.join(', ') : ''}</div>`).join('')}
-      ${r.photo ? `<img src="${r.photo}" style="max-width:80px;border-radius:6px;margin-top:0.3rem;">` : ''}
-    </div>
-  `).join('') || '<p style="color:var(--text-muted)">No registrations yet</p>';
+  document.getElementById('org-notes').value = data.orgNotes;
+}
+
+function removeRegistration(i) {
+  data.registrations.splice(i, 1);
+  saveData(); renderOrg();
+}
+
+function adminAddAgenda() {
+  const time = document.getElementById('admin-agenda-time').value;
+  const desc = document.getElementById('admin-agenda-desc').value.trim();
+  if (!time || !desc) return;
+  data.agenda.push({ time, desc: { ru: desc, nl: desc, en: desc } });
+  saveData(); renderOrg();
+  document.getElementById('admin-agenda-time').value = '';
+  document.getElementById('admin-agenda-desc').value = '';
+}
+
+function adminAddWish() {
+  const name = document.getElementById('admin-wish-name').value.trim();
+  const url = document.getElementById('admin-wish-url').value.trim();
+  const note = document.getElementById('admin-wish-note').value.trim();
+  if (!name) return;
+  data.wishlist.push({ name, url, note, bookedBy: null, bookedByFamily: null });
+  saveData(); renderOrg();
+  document.getElementById('admin-wish-name').value = '';
+  document.getElementById('admin-wish-url').value = '';
+  document.getElementById('admin-wish-note').value = '';
 }
 function addOrgTask() {
   const task = document.getElementById('org-task').value.trim();
