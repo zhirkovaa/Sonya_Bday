@@ -19,83 +19,31 @@
   --success: #10b981;
   --danger: #ef4444;
 }
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
-
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
 }
-
 .header {
   background: linear-gradient(135deg, var(--pink), var(--purple));
   color: white;
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem;
   position: relative;
 }
-.header h1 { font-size: 2rem; margin-bottom: 0.25rem; }
-.header p { opacity: 0.9; font-size: 1.1rem; }
+.header h1 { font-size: 1.8rem; margin-bottom: 0.15rem; }
+.header p { opacity: 0.9; font-size: 1rem; }
+.admin-toggle {
+  position: absolute; top: 0.5rem; left: 0.5rem;
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  border-radius: 6px; padding: 0.2rem 0.5rem; cursor: pointer; font-size: 0.75rem;
+}
+.admin-toggle:hover { background: rgba(255,255,255,0.4); }
 
-.lang-switcher {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: flex;
-  gap: 0.25rem;
-}
-.lang-btn {
-  padding: 0.25rem 0.5rem;
-  border: 2px solid rgba(255,255,255,0.5);
-  border-radius: 6px;
-  background: rgba(255,255,255,0.15);
-  color: white;
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 600;
-  transition: all 0.2s;
-}
-.lang-btn:hover { background: rgba(255,255,255,0.3); }
-.lang-btn.active {
-  background: white;
-  color: var(--pink-dark);
-  border-color: white;
-}
-
-.tabs {
-  display: flex;
-  background: var(--card);
-  border-bottom: 2px solid var(--border);
-  overflow-x: auto;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.tab {
-  flex: 1;
-  min-width: max-content;
-  padding: 0.75rem 1rem;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-muted);
-  border-bottom: 3px solid transparent;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.tab.active {
-  color: var(--pink-dark);
-  border-bottom-color: var(--pink-dark);
-  background: var(--pink-light);
-}
-.tab:hover { background: var(--pink-light); }
-
-.page { display: none; padding: 1rem; max-width: 800px; margin: 0 auto; }
-.page.active { display: block; }
+.step { display: none; padding: 1rem; max-width: 600px; margin: 0 auto; }
+.step.active { display: block; }
 
 .card {
   background: var(--card);
@@ -104,7 +52,7 @@ body {
   margin-bottom: 1rem;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
-.card h2 { font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--pink-dark); }
+.card h2 { font-size: 1.15rem; margin-bottom: 0.75rem; color: var(--pink-dark); }
 .card h3 { font-size: 1rem; margin-bottom: 0.5rem; }
 
 input, select, textarea {
@@ -117,751 +65,748 @@ input, select, textarea {
   margin-bottom: 0.5rem;
 }
 input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: var(--pink);
+  outline: none; border-color: var(--pink);
   box-shadow: 0 0 0 3px rgba(244,114,182,0.15);
 }
-
 button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s;
+  padding: 0.5rem 1rem; border: none; border-radius: 8px;
+  cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s;
 }
 .btn-primary { background: var(--pink-dark); color: white; }
 .btn-primary:hover { background: #be185d; }
+.btn-big {
+  background: var(--pink-dark); color: white; width: 100%;
+  padding: 0.85rem; font-size: 1.05rem; font-weight: 600;
+  border-radius: 10px; margin-top: 0.5rem;
+}
+.btn-big:hover { background: #be185d; }
 .btn-secondary { background: var(--purple-light); color: #6d28d9; }
 .btn-secondary:hover { background: #ddd6fe; }
 .btn-danger { background: #fee2e2; color: var(--danger); }
 .btn-danger:hover { background: #fecaca; }
 .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
+.btn-outline {
+  background: transparent; border: 2px solid var(--border); color: var(--text);
+}
+.btn-outline:hover { border-color: var(--pink); color: var(--pink-dark); }
+
+.lang-choice { display: flex; flex-direction: column; gap: 0.75rem; align-items: center; padding: 2rem 0; }
+.lang-btn-big {
+  width: 200px; padding: 1rem; font-size: 1.1rem; font-weight: 600;
+  border: 2px solid var(--border); border-radius: 12px; background: var(--card);
+  cursor: pointer; transition: all 0.2s; text-align: center;
+}
+.lang-btn-big:hover { border-color: var(--pink); background: var(--pink-light); }
 
 .badge {
-  display: inline-block;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600;
 }
 .badge-pink { background: var(--pink-light); color: var(--pink-dark); }
 .badge-green { background: #d1fae5; color: #065f46; }
 .badge-purple { background: var(--purple-light); color: #6d28d9; }
 
-.allergen-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem; }
-.allergen-tag {
-  background: #fef3c7;
-  color: #92400e;
-  padding: 0.1rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.75rem;
+.checkbox-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0; }
+.checkbox-grid label {
+  display: flex; align-items: center; gap: 0.3rem;
+  background: var(--pink-light); padding: 0.3rem 0.6rem; border-radius: 6px;
+  font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
 }
+.checkbox-grid label:has(input:checked) { background: #fbbf24; color: #78350f; }
+.checkbox-grid input { width: auto; margin: 0; }
 
-.agenda-item {
-  display: flex;
-  gap: 1rem;
-  padding: 0.75rem 0;
-  border-bottom: 1px solid var(--border);
+.person-card {
+  background: #f9fafb; border: 1px solid var(--border); border-radius: 10px;
+  padding: 0.75rem; margin-bottom: 0.75rem;
 }
-.agenda-item:last-child { border-bottom: none; }
-.agenda-time {
-  font-weight: 700;
-  color: var(--pink-dark);
-  min-width: 60px;
+.person-card .person-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;
 }
-
-.wishlist-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
-}
-.wishlist-item.booked { background: #f0fdf4; border-color: #bbf7d0; }
-.wishlist-info { flex: 1; }
-.wishlist-info a { color: var(--pink-dark); text-decoration: none; }
-.wishlist-info a:hover { text-decoration: underline; }
-.wishlist-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
-
-.location-map {
-  background: var(--purple-light);
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
-}
-.location-map a { color: var(--pink-dark); font-weight: 600; }
+.person-card .person-header strong { font-size: 1rem; }
 
 .form-row { display: flex; gap: 0.5rem; align-items: flex-start; }
 .form-row > * { flex: 1; }
-.form-row > .btn-primary { flex: none; margin-top: 0; }
+
+.photo-upload {
+  border: 2px dashed var(--border); border-radius: 10px; padding: 1.5rem;
+  text-align: center; cursor: pointer; transition: all 0.2s; position: relative;
+  overflow: hidden;
+}
+.photo-upload:hover { border-color: var(--pink); background: var(--pink-light); }
+.photo-upload img {
+  max-width: 100%; max-height: 200px; border-radius: 8px; object-fit: cover;
+}
+.photo-upload input { display: none; }
+
+.location-card { text-align: center; }
+.location-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+.location-links { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
+.location-links a {
+  display: block; padding: 0.65rem; border-radius: 8px; text-decoration: none;
+  font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
+}
+.link-maps { background: #dbeafe; color: #1e40af; }
+.link-maps:hover { background: #bfdbfe; }
+.link-site { background: #d1fae5; color: #065f46; }
+.link-site:hover { background: #a7f3d0; }
+.parking-note {
+  background: #fef3c7; color: #92400e; padding: 0.5rem 0.75rem;
+  border-radius: 8px; font-size: 0.9rem; margin-top: 0.75rem;
+}
+
+.agenda-item {
+  display: flex; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.agenda-item:last-child { border-bottom: none; }
+.agenda-time { font-weight: 700; color: var(--pink-dark); min-width: 55px; }
+
+.wishlist-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.75rem; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.5rem;
+}
+.wishlist-item.booked { background: #f0fdf4; border-color: #bbf7d0; }
+.wishlist-item.booked-by-me { background: #eff6ff; border-color: #93c5fd; }
+.wishlist-info { flex: 1; }
+.wishlist-info a { color: var(--pink-dark); text-decoration: none; }
+.wishlist-info a:hover { text-decoration: underline; }
+
+.nav-buttons { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.nav-buttons > * { flex: 1; }
+
+.progress-bar {
+  display: flex; gap: 0.25rem; padding: 0.75rem 1rem; max-width: 600px; margin: 0 auto;
+}
+.progress-dot {
+  flex: 1; height: 4px; border-radius: 2px; background: var(--border); transition: all 0.3s;
+}
+.progress-dot.done { background: var(--pink); }
+.progress-dot.current { background: var(--pink-dark); }
 
 .checklist-item {
-  display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.4rem 0;
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0;
 }
 .checklist-item input[type="checkbox"] { width: auto; margin: 0; }
 .checklist-item.done label { text-decoration: line-through; color: var(--text-muted); }
 
-.sibling-group {
-  background: var(--purple-light);
-  border-radius: 8px;
-  padding: 0.5rem 0.75rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.85rem;
-}
+.summary-section { margin-bottom: 0.75rem; }
+.summary-section h4 { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem; }
 
 @media (max-width: 600px) {
-  .header h1 { font-size: 1.5rem; }
-  .tabs { font-size: 0.8rem; }
-  .tab { padding: 0.6rem 0.5rem; font-size: 0.8rem; }
+  .header h1 { font-size: 1.4rem; }
   .form-row { flex-direction: column; }
   .wishlist-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-  .wishlist-actions { width: 100%; }
 }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="lang-switcher">
-    <button class="lang-btn" onclick="setLang('ru')">RU</button>
-    <button class="lang-btn" onclick="setLang('nl')">NL</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
-  </div>
-  <h1 id="h-title"></h1>
+  <button class="admin-toggle" onclick="toggleAdmin()" id="admin-btn">⚙️</button>
+  <h1 id="h-title">🎈 Sonya's Birthday! 🎈</h1>
   <p id="h-subtitle"></p>
 </div>
 
-<div class="tabs" id="tabs-bar"></div>
+<div class="progress-bar" id="progress-bar"></div>
 
-<div id="agenda" class="page active">
+<!-- STEP 0: Language -->
+<div id="step-lang" class="step active">
   <div class="card">
-    <h2 id="agenda-title"></h2>
+    <div class="lang-choice">
+      <h2 style="margin-bottom: 0.5rem;">🌍</h2>
+      <button class="lang-btn-big" onclick="chooseLang('ru')">🇷🇺 Русский</button>
+      <button class="lang-btn-big" onclick="chooseLang('nl')">🇳🇱 Nederlands</button>
+      <button class="lang-btn-big" onclick="chooseLang('en')">🇬🇧 English</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 1: Children -->
+<div id="step-children" class="step">
+  <div class="card">
+    <h2 id="t-children-title"></h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.75rem;" id="t-children-sub"></p>
+    <div id="reg-children"></div>
+    <div class="form-row" style="margin-top:0.5rem;">
+      <input type="text" id="reg-child-name" />
+      <button class="btn-primary" onclick="regAddChild()">+</button>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('lang')" id="t-back-lang"></button>
+    <button class="btn-big" onclick="goStep('parents')" id="t-next-parents" style="margin-top:0;"></button>
+  </div>
+</div>
+
+<!-- STEP 2: Parents -->
+<div id="step-parents" class="step">
+  <div class="card">
+    <h2 id="t-parents-title"></h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.75rem;" id="t-parents-sub"></p>
+    <div id="reg-parents"></div>
+    <div class="form-row" style="margin-top:0.5rem;">
+      <input type="text" id="reg-parent-name" />
+      <button class="btn-primary" onclick="regAddParent()">+</button>
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('children')" id="t-back-children"></button>
+    <button class="btn-big" onclick="goStep('photo')" id="t-next-photo" style="margin-top:0;"></button>
+  </div>
+</div>
+
+<!-- STEP 3: Photo -->
+<div id="step-photo" class="step">
+  <div class="card">
+    <h2 id="t-photo-title"></h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.75rem;" id="t-photo-sub"></p>
+    <div class="photo-upload" id="photo-drop" onclick="document.getElementById('photo-input').click()">
+      <div id="photo-placeholder"></div>
+      <input type="file" id="photo-input" accept="image/*" onchange="handlePhoto(this)">
+    </div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('parents')" id="t-back-parents"></button>
+    <button class="btn-big" onclick="goStep('location')" id="t-next-location" style="margin-top:0;"></button>
+  </div>
+</div>
+
+<!-- STEP 4: Location -->
+<div id="step-location" class="step">
+  <div class="card location-card">
+    <h2 id="t-loc-title"></h2>
+    <h3>Philips Fruittuin</h3>
+    <p style="color:var(--text-muted);">Fruittuin van West, Amsterdam</p>
+    <div class="location-links">
+      <a href="https://www.google.com/maps/place//data=!4m2!3m1!1s0x47c6dbe396ca5ef3:0x56dc4cd1d4d1146f?sa=X&ved=1t:8290&ictx=111" target="_blank" class="link-maps" id="t-loc-maps">📍 Google Maps</a>
+      <a href="https://philipsfruittuin.nl/proeftuin" target="_blank" class="link-site" id="t-loc-site">🌐 Website</a>
+    </div>
+    <div class="parking-note" id="t-parking"></div>
+  </div>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('photo')" id="t-back-photo"></button>
+    <button class="btn-big" onclick="goStep('agenda')" id="t-next-agenda" style="margin-top:0;"></button>
+  </div>
+</div>
+
+<!-- STEP 5: Agenda -->
+<div id="step-agenda" class="step">
+  <div class="card">
+    <h2 id="t-agenda-title"></h2>
     <div id="agenda-list"></div>
-  </div>
-  <div class="card">
-    <h3 id="agenda-add-title"></h3>
-    <div class="form-row">
-      <input type="time" id="agenda-time" />
-      <input type="text" id="agenda-desc" />
-      <button class="btn-primary" onclick="addAgendaItem()">+</button>
-    </div>
-  </div>
-</div>
-
-<div id="location" class="page">
-  <div class="card">
-    <h2 id="loc-title"></h2>
-    <div class="location-map">
-      <h3>Philips Fruittuin</h3>
-      <p style="margin: 0.75rem 0; color: var(--text-muted);">Fruittuin van West, Amsterdam</p>
-      <a href="https://maps.google.com/?q=Philips+Fruittuin+Amsterdam" target="_blank" id="loc-maps-link"></a>
-    </div>
-  </div>
-</div>
-
-<div id="guests" class="page">
-  <div class="card">
-    <h2 id="hosts-title"></h2>
-    <p id="hosts-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
-    <div id="hosts-list"></div>
-    <div class="form-row" style="margin-top: 0.5rem;">
-      <input type="text" id="host-name" />
-      <select id="host-role" style="max-width: 160px;"></select>
-      <button class="btn-primary" onclick="addHost()">+</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 id="children-title"></h2>
-    <div id="children-list"></div>
-    <div class="form-row" style="margin-top: 0.5rem;">
-      <input type="text" id="child-name" />
-      <button class="btn-primary" onclick="addChild()" id="btn-add-child"></button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2 id="parents-title"></h2>
-    <p id="parents-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
-    <div id="parents-list"></div>
-    <div style="margin-top: 0.5rem;">
+    <div id="agenda-admin-form" style="display:none;margin-top:0.75rem;">
       <div class="form-row">
-        <input type="text" id="parent-name" />
-        <select id="parent-child" style="max-width: 200px;"></select>
-      </div>
-      <div class="form-row" style="margin-top: 0;">
-        <input type="text" id="parent-allergens" />
-        <button class="btn-primary" onclick="addParent()" id="btn-add-parent"></button>
+        <input type="time" id="agenda-time" />
+        <input type="text" id="agenda-desc" />
+        <button class="btn-primary" onclick="addAgendaItem()">+</button>
       </div>
     </div>
   </div>
-
-  <div class="card">
-    <h2 id="siblings-title"></h2>
-    <p id="siblings-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
-    <div id="sibling-groups"></div>
-    <div class="form-row" style="margin-top: 0.5rem;">
-      <select id="sibling-select" multiple style="min-height: 60px;"></select>
-      <button class="btn-primary" onclick="createSiblingGroup()" id="btn-merge-siblings"></button>
-    </div>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('location')" id="t-back-location"></button>
+    <button class="btn-big" onclick="goStep('wishlist')" id="t-next-wishlist" style="margin-top:0;"></button>
   </div>
 </div>
 
-<div id="wishlist" class="page">
+<!-- STEP 6: Wishlist -->
+<div id="step-wishlist" class="step">
   <div class="card">
-    <h2 id="wish-title"></h2>
-    <p id="wish-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;"></p>
+    <h2 id="t-wish-title"></h2>
+    <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:0.75rem;" id="t-wish-sub"></p>
     <div id="wishlist-items"></div>
+    <div id="wish-admin-form" style="display:none;margin-top:0.75rem;">
+      <input type="text" id="wish-name" />
+      <input type="url" id="wish-url" />
+      <input type="text" id="wish-note" />
+      <button class="btn-primary" onclick="addWish()" id="t-btn-add-wish"></button>
+    </div>
   </div>
-  <div class="card">
-    <h3 id="wish-add-title"></h3>
-    <input type="text" id="wish-name" />
-    <input type="url" id="wish-url" />
-    <input type="text" id="wish-note" />
-    <button class="btn-primary" onclick="addWish()" id="btn-add-wish"></button>
+  <div class="nav-buttons">
+    <button class="btn-outline" onclick="goStep('agenda')" id="t-back-agenda"></button>
+    <button class="btn-big" onclick="goStep('done')" id="t-finish" style="margin-top:0;"></button>
   </div>
 </div>
 
-<div id="org" class="page">
+<!-- STEP 7: Done / Summary -->
+<div id="step-done" class="step">
+  <div class="card" style="text-align:center;">
+    <h2 id="t-done-title"></h2>
+    <p id="t-done-sub" style="color:var(--text-muted);margin-bottom:1rem;"></p>
+    <div id="reg-summary" style="text-align:left;"></div>
+  </div>
+  <button class="btn-outline" onclick="goStep('wishlist')" style="width:100%;margin-top:0.5rem;" id="t-back-wishlist"></button>
+</div>
+
+<!-- ADMIN: Organization tab -->
+<div id="step-org" class="step">
   <div class="card">
-    <h2 id="org-title"></h2>
-    <p id="org-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;"></p>
+    <h2>🔧 Organization</h2>
     <div id="org-tasks"></div>
-    <div class="form-row" style="margin-top: 0.75rem;">
-      <input type="text" id="org-task" />
-      <select id="org-assignee" style="max-width: 160px;"></select>
+    <div class="form-row" style="margin-top:0.75rem;">
+      <input type="text" id="org-task" placeholder="New task" />
+      <select id="org-assignee" style="max-width:160px;">
+        <option value="">Who?</option>
+      </select>
       <button class="btn-primary" onclick="addOrgTask()">+</button>
     </div>
   </div>
   <div class="card">
-    <h2 id="org-notes-title"></h2>
-    <textarea id="org-notes" rows="5" oninput="saveOrgNotes()"></textarea>
+    <h2>💬 Notes</h2>
+    <textarea id="org-notes" rows="5" placeholder="Notes..." oninput="saveOrgNotes()"></textarea>
   </div>
+  <div class="card">
+    <h2>📋 Registrations</h2>
+    <div id="all-registrations"></div>
+  </div>
+  <button class="btn-outline" onclick="toggleAdmin()" style="width:100%;margin-top:0.5rem;">← Back</button>
 </div>
 
 <script>
+const ALLERGENS = {
+  ru: ['Свинина','Говядина','Глютен','Молоко','Яйца','Орехи','Рыба','Морепродукты','Соя'],
+  nl: ['Varkensvlees','Rundvlees','Gluten','Melk','Eieren','Noten','Vis','Zeevruchten','Soja'],
+  en: ['Pork','Beef','Gluten','Dairy','Eggs','Nuts','Fish','Shellfish','Soy'],
+};
+
 const T = {
   ru: {
     title: '🎈 День Рождения Сони! 🎈',
-    subtitle: 'Добро пожаловать на страничку праздника',
-    tabAgenda: '📋 Агенда',
-    tabLocation: '📍 Локация',
-    tabGuests: '👨‍👩‍👧 Гости',
-    tabWishlist: '🎁 Виш-лист',
-    tabOrg: '🔧 Организация',
-    agendaTitle: '📋 Программа праздника',
-    agendaAdd: 'Добавить пункт',
-    agendaPlaceholder: 'Описание',
-    agendaEmpty: 'Пока нет пунктов',
-    agendaDefault: [
-      { time: '14:00', desc: 'Сбор гостей' },
-      { time: '14:30', desc: 'Игры и развлечения' },
-      { time: '15:30', desc: 'Торт и поздравления' },
-      { time: '16:00', desc: 'Свободное время' },
-      { time: '17:00', desc: 'Окончание праздника' },
-    ],
+    subtitle: 'Регистрация на праздник',
+    childrenTitle: '🧒 Ваши дети',
+    childrenSub: 'Добавьте детей, которые придут на праздник, и отметьте аллергены / ограничения в еде',
+    childPlaceholder: 'Имя ребёнка',
+    parentsTitle: '👨‍👩‍👧 Родители',
+    parentsSub: 'Кто из родителей придёт? Укажите также аллергены / ограничения в еде',
+    parentPlaceholder: 'Имя родителя',
+    photoTitle: '📷 Фото (необязательно)',
+    photoSub: 'Добавьте семейное фото или фото ребёнка',
+    photoPlaceholder: '📷 Нажмите, чтобы загрузить фото',
     locTitle: '📍 Локация',
     locMaps: '📍 Открыть в Google Maps',
-    hostsTitle: '👨‍👩‍👧 Родители Сони и друзья',
-    hostsSubtitle: 'Организаторы и взрослые гости без детей',
-    hostPlaceholder: 'Имя',
-    roleParent: 'Родитель Сони',
-    roleFriend: 'Друг семьи',
-    badgeParent: 'Родитель',
-    badgeFriend: 'Друг',
-    childrenTitle: '🧒 Приглашённые дети',
-    childPlaceholder: 'Имя ребёнка',
-    addChild: '+ Ребёнок',
-    parentsTitle: '👨‍👩‍👧 Родители гостей',
-    parentsSubtitle: 'Родители могут добавить себя и указать аллергены ребёнка',
-    parentPlaceholder: 'Имя родителя',
-    selectChild: 'Выберите ребёнка...',
-    allergenPlaceholder: 'Аллергены (через запятую, напр.: свинина, орехи)',
-    addParent: '+ Родитель',
-    siblingsTitle: '👫 Группы сиблингов (один подарок)',
-    siblingsSubtitle: 'Объедините братьев/сестёр для общего подарка',
-    mergeSiblings: 'Объединить',
+    locSite: '🌐 Сайт площадки',
+    parking: '🅿️ Парковка бесплатная!',
+    agendaTitle: '📋 Программа праздника',
+    agendaPlaceholder: 'Описание',
     wishTitle: '🎁 Виш-лист',
-    wishSubtitle: 'Забронируйте подарок, чтобы он не повторился. Сиблинги дарят один подарок на группу.',
-    wishAddTitle: 'Добавить подарок в виш-лист',
-    wishNamePlaceholder: 'Название подарка',
-    wishUrlPlaceholder: 'Ссылка (необязательно)',
-    wishNotePlaceholder: 'Примечание (необязательно)',
-    addWish: 'Добавить',
-    book: 'Забронировать...',
-    bookOther: 'Другой...',
+    wishSub: 'Забронируйте подарок для Сони (один от семьи). Если не хотите — просто нажмите «Далее».',
+    wishNamePh: 'Название подарка',
+    wishUrlPh: 'Ссылка (необязательно)',
+    wishNotePh: 'Примечание (необязательно)',
+    addWish: 'Добавить подарок',
+    book: 'Забронировать',
     booked: 'Забронировано',
+    bookedByYou: 'Ваш подарок',
     cancel: 'Отменить',
-    wishEmpty: 'Виш-лист пуст',
-    promptName: 'Введите имя:',
-    orgTitle: '🔧 Организация праздника',
-    orgSubtitle: 'Только для организаторов',
-    orgTaskPlaceholder: 'Новая задача',
-    orgWho: 'Кто?',
-    orgNoTasks: 'Нет задач',
-    orgNotesTitle: '💬 Заметки',
-    orgNotesPlaceholder: 'Общие заметки по организации...',
+    doneTitle: '🎉 Готово!',
+    doneSub: 'Спасибо за регистрацию! Ждём вас на празднике!',
+    back: '← Назад',
+    next: 'Далее →',
+    finish: 'Готово ✓',
+    allergens: 'Аллергены / ограничения:',
+    noAllergens: 'Нет ограничений',
+    family: 'Семья',
+    children: 'Дети',
+    parents: 'Родители',
   },
   nl: {
     title: '🎈 Sonya\'s Verjaardag! 🎈',
-    subtitle: 'Welkom op de feestpagina',
-    tabAgenda: '📋 Agenda',
-    tabLocation: '📍 Locatie',
-    tabGuests: '👨‍👩‍👧 Gasten',
-    tabWishlist: '🎁 Verlanglijst',
-    tabOrg: '🔧 Organisatie',
-    agendaTitle: '📋 Feestprogramma',
-    agendaAdd: 'Punt toevoegen',
-    agendaPlaceholder: 'Beschrijving',
-    agendaEmpty: 'Nog geen punten',
-    agendaDefault: [
-      { time: '14:00', desc: 'Aankomst gasten' },
-      { time: '14:30', desc: 'Spelletjes en activiteiten' },
-      { time: '15:30', desc: 'Taart en felicitaties' },
-      { time: '16:00', desc: 'Vrij spelen' },
-      { time: '17:00', desc: 'Einde feest' },
-    ],
+    subtitle: 'Registratie voor het feest',
+    childrenTitle: '🧒 Uw kinderen',
+    childrenSub: 'Voeg kinderen toe die naar het feest komen en geef allergieën / dieetbeperkingen aan',
+    childPlaceholder: 'Naam van het kind',
+    parentsTitle: '👨‍👩‍👧 Ouders',
+    parentsSub: 'Welke ouder(s) komen mee? Geef ook allergieën / dieetbeperkingen aan',
+    parentPlaceholder: 'Naam ouder',
+    photoTitle: '📷 Foto (optioneel)',
+    photoSub: 'Voeg een gezinsfoto of foto van uw kind toe',
+    photoPlaceholder: '📷 Klik om een foto te uploaden',
     locTitle: '📍 Locatie',
     locMaps: '📍 Open in Google Maps',
-    hostsTitle: '👨‍👩‍👧 Sonya\'s ouders en vrienden',
-    hostsSubtitle: 'Organisatoren en volwassen gasten zonder kinderen',
-    hostPlaceholder: 'Naam',
-    roleParent: 'Ouder van Sonya',
-    roleFriend: 'Vriend van de familie',
-    badgeParent: 'Ouder',
-    badgeFriend: 'Vriend',
-    childrenTitle: '🧒 Uitgenodigde kinderen',
-    childPlaceholder: 'Naam van het kind',
-    addChild: '+ Kind',
-    parentsTitle: '👨‍👩‍👧 Ouders van gasten',
-    parentsSubtitle: 'Ouders kunnen zichzelf toevoegen en allergieën van hun kind aangeven',
-    parentPlaceholder: 'Naam ouder',
-    selectChild: 'Kies een kind...',
-    allergenPlaceholder: 'Allergieën (kommagescheiden, bijv.: varkensvlees, noten)',
-    addParent: '+ Ouder',
-    siblingsTitle: '👫 Broers/zussen groepen (één cadeau)',
-    siblingsSubtitle: 'Groepeer broers en zussen voor een gezamenlijk cadeau',
-    mergeSiblings: 'Groeperen',
+    locSite: '🌐 Website van de locatie',
+    parking: '🅿️ Gratis parkeren!',
+    agendaTitle: '📋 Feestprogramma',
+    agendaPlaceholder: 'Beschrijving',
     wishTitle: '🎁 Verlanglijst',
-    wishSubtitle: 'Reserveer een cadeau zodat het niet dubbel is. Broers/zussen geven één cadeau per groep.',
-    wishAddTitle: 'Cadeau toevoegen aan verlanglijst',
-    wishNamePlaceholder: 'Naam van het cadeau',
-    wishUrlPlaceholder: 'Link (optioneel)',
-    wishNotePlaceholder: 'Opmerking (optioneel)',
-    addWish: 'Toevoegen',
-    book: 'Reserveren...',
-    bookOther: 'Anders...',
+    wishSub: 'Reserveer een cadeau voor Sonya (één per familie). Als u dat niet wilt, klik gewoon op "Volgende".',
+    wishNamePh: 'Naam van het cadeau',
+    wishUrlPh: 'Link (optioneel)',
+    wishNotePh: 'Opmerking (optioneel)',
+    addWish: 'Cadeau toevoegen',
+    book: 'Reserveren',
     booked: 'Gereserveerd',
+    bookedByYou: 'Uw cadeau',
     cancel: 'Annuleren',
-    wishEmpty: 'Verlanglijst is leeg',
-    promptName: 'Voer naam in:',
-    orgTitle: '🔧 Feestorganisatie',
-    orgSubtitle: 'Alleen voor organisatoren',
-    orgTaskPlaceholder: 'Nieuwe taak',
-    orgWho: 'Wie?',
-    orgNoTasks: 'Geen taken',
-    orgNotesTitle: '💬 Notities',
-    orgNotesPlaceholder: 'Algemene organisatienotities...',
+    doneTitle: '🎉 Klaar!',
+    doneSub: 'Bedankt voor uw registratie! We kijken uit naar het feest!',
+    back: '← Terug',
+    next: 'Volgende →',
+    finish: 'Klaar ✓',
+    allergens: 'Allergieën / beperkingen:',
+    noAllergens: 'Geen beperkingen',
+    family: 'Familie',
+    children: 'Kinderen',
+    parents: 'Ouders',
   },
   en: {
     title: '🎈 Sonya\'s Birthday! 🎈',
-    subtitle: 'Welcome to the party page',
-    tabAgenda: '📋 Agenda',
-    tabLocation: '📍 Location',
-    tabGuests: '👨‍👩‍👧 Guests',
-    tabWishlist: '🎁 Wishlist',
-    tabOrg: '🔧 Organization',
-    agendaTitle: '📋 Party Program',
-    agendaAdd: 'Add item',
-    agendaPlaceholder: 'Description',
-    agendaEmpty: 'No items yet',
-    agendaDefault: [
-      { time: '14:00', desc: 'Guests arrive' },
-      { time: '14:30', desc: 'Games and activities' },
-      { time: '15:30', desc: 'Cake and congratulations' },
-      { time: '16:00', desc: 'Free time' },
-      { time: '17:00', desc: 'End of party' },
-    ],
+    subtitle: 'Party registration',
+    childrenTitle: '🧒 Your children',
+    childrenSub: 'Add children coming to the party and mark any allergens / dietary restrictions',
+    childPlaceholder: 'Child\'s name',
+    parentsTitle: '👨‍👩‍👧 Parents',
+    parentsSub: 'Which parent(s) are coming? Also mark any allergens / dietary restrictions',
+    parentPlaceholder: 'Parent\'s name',
+    photoTitle: '📷 Photo (optional)',
+    photoSub: 'Add a family or child photo',
+    photoPlaceholder: '📷 Click to upload a photo',
     locTitle: '📍 Location',
     locMaps: '📍 Open in Google Maps',
-    hostsTitle: '👨‍👩‍👧 Sonya\'s parents & friends',
-    hostsSubtitle: 'Organizers and adult guests without children',
-    hostPlaceholder: 'Name',
-    roleParent: 'Sonya\'s parent',
-    roleFriend: 'Family friend',
-    badgeParent: 'Parent',
-    badgeFriend: 'Friend',
-    childrenTitle: '🧒 Invited children',
-    childPlaceholder: 'Child\'s name',
-    addChild: '+ Child',
-    parentsTitle: '👨‍👩‍👧 Guest parents',
-    parentsSubtitle: 'Parents can add themselves and specify their child\'s allergens',
-    parentPlaceholder: 'Parent\'s name',
-    selectChild: 'Select a child...',
-    allergenPlaceholder: 'Allergens (comma-separated, e.g.: pork, nuts)',
-    addParent: '+ Parent',
-    siblingsTitle: '👫 Sibling groups (one gift)',
-    siblingsSubtitle: 'Group siblings together for a shared gift',
-    mergeSiblings: 'Group',
+    locSite: '🌐 Venue website',
+    parking: '🅿️ Free parking!',
+    agendaTitle: '📋 Party Program',
+    agendaPlaceholder: 'Description',
     wishTitle: '🎁 Wishlist',
-    wishSubtitle: 'Book a gift so it doesn\'t get duplicated. Siblings give one gift per group.',
-    wishAddTitle: 'Add a gift to the wishlist',
-    wishNamePlaceholder: 'Gift name',
-    wishUrlPlaceholder: 'Link (optional)',
-    wishNotePlaceholder: 'Note (optional)',
-    addWish: 'Add',
-    book: 'Book...',
-    bookOther: 'Other...',
+    wishSub: 'Book a gift for Sonya (one per family). If you prefer not to, just click "Next".',
+    wishNamePh: 'Gift name',
+    wishUrlPh: 'Link (optional)',
+    wishNotePh: 'Note (optional)',
+    addWish: 'Add gift',
+    book: 'Book',
     booked: 'Booked',
+    bookedByYou: 'Your gift',
     cancel: 'Cancel',
-    wishEmpty: 'Wishlist is empty',
-    promptName: 'Enter name:',
-    orgTitle: '🔧 Party Organization',
-    orgSubtitle: 'Organizers only',
-    orgTaskPlaceholder: 'New task',
-    orgWho: 'Who?',
-    orgNoTasks: 'No tasks',
-    orgNotesTitle: '💬 Notes',
-    orgNotesPlaceholder: 'General organization notes...',
+    doneTitle: '🎉 All done!',
+    doneSub: 'Thanks for registering! See you at the party!',
+    back: '← Back',
+    next: 'Next →',
+    finish: 'Done ✓',
+    allergens: 'Allergens / restrictions:',
+    noAllergens: 'No restrictions',
+    family: 'Family',
+    children: 'Children',
+    parents: 'Parents',
   }
 };
 
-let lang = localStorage.getItem('sonya_bday_lang') || 'ru';
-function t(key) { return T[lang][key] || T.ru[key] || key; }
+const LS = k => 'sonya_' + k;
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem(LS(k))) || d; } catch { return d; } };
+const save = (k, v) => localStorage.setItem(LS(k), JSON.stringify(v));
 
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('sonya_bday_lang', l);
-  document.documentElement.lang = l === 'nl' ? 'nl' : l === 'en' ? 'en' : 'ru';
-  applyLang();
-  render();
-}
+let lang = load('lang', null);
+let isAdmin = load('admin', false);
+let currentStep = lang ? 'children' : 'lang';
+let familyId = load('familyId', null);
+if (!familyId) { familyId = crypto.randomUUID(); save('familyId', familyId); }
 
-function applyLang() {
-  document.getElementById('h-title').textContent = t('title');
-  document.getElementById('h-subtitle').textContent = t('subtitle');
-  document.title = t('title');
-
-  const tabsBar = document.getElementById('tabs-bar');
-  const tabKeys = ['agenda', 'location', 'guests', 'wishlist', 'org'];
-  const tabLabels = [t('tabAgenda'), t('tabLocation'), t('tabGuests'), t('tabWishlist'), t('tabOrg')];
-  tabsBar.innerHTML = tabKeys.map((k, i) =>
-    `<button class="tab ${k === currentTab ? 'active' : ''}" onclick="showTab('${k}')">${tabLabels[i]}</button>`
-  ).join('');
-
-  document.getElementById('agenda-title').textContent = t('agendaTitle');
-  document.getElementById('agenda-add-title').textContent = t('agendaAdd');
-  document.getElementById('agenda-desc').placeholder = t('agendaPlaceholder');
-  document.getElementById('loc-title').textContent = t('locTitle');
-  document.getElementById('loc-maps-link').textContent = t('locMaps');
-  document.getElementById('hosts-title').textContent = t('hostsTitle');
-  document.getElementById('hosts-subtitle').textContent = t('hostsSubtitle');
-  document.getElementById('host-name').placeholder = t('hostPlaceholder');
-  document.getElementById('host-role').innerHTML =
-    `<option value="parent">${t('roleParent')}</option><option value="friend">${t('roleFriend')}</option>`;
-  document.getElementById('children-title').textContent = t('childrenTitle');
-  document.getElementById('child-name').placeholder = t('childPlaceholder');
-  document.getElementById('btn-add-child').textContent = t('addChild');
-  document.getElementById('parents-title').textContent = t('parentsTitle');
-  document.getElementById('parents-subtitle').textContent = t('parentsSubtitle');
-  document.getElementById('parent-name').placeholder = t('parentPlaceholder');
-  document.getElementById('parent-allergens').placeholder = t('allergenPlaceholder');
-  document.getElementById('btn-add-parent').textContent = t('addParent');
-  document.getElementById('siblings-title').textContent = t('siblingsTitle');
-  document.getElementById('siblings-subtitle').textContent = t('siblingsSubtitle');
-  document.getElementById('btn-merge-siblings').textContent = t('mergeSiblings');
-  document.getElementById('wish-title').textContent = t('wishTitle');
-  document.getElementById('wish-subtitle').textContent = t('wishSubtitle');
-  document.getElementById('wish-add-title').textContent = t('wishAddTitle');
-  document.getElementById('wish-name').placeholder = t('wishNamePlaceholder');
-  document.getElementById('wish-url').placeholder = t('wishUrlPlaceholder');
-  document.getElementById('wish-note').placeholder = t('wishNotePlaceholder');
-  document.getElementById('btn-add-wish').textContent = t('addWish');
-  document.getElementById('org-title').textContent = t('orgTitle');
-  document.getElementById('org-subtitle').textContent = t('orgSubtitle');
-  document.getElementById('org-task').placeholder = t('orgTaskPlaceholder');
-  document.getElementById('org-notes-title').textContent = t('orgNotesTitle');
-  document.getElementById('org-notes').placeholder = t('orgNotesPlaceholder');
-
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
-  });
-}
-
-const LS_KEY = 'sonya_bday_';
-function load(key, def) {
-  try { return JSON.parse(localStorage.getItem(LS_KEY + key)) || def; }
-  catch { return def; }
-}
-function save(key, val) { localStorage.setItem(LS_KEY + key, JSON.stringify(val)); }
-
+let reg = load('reg', { children: [], parents: [], photo: null });
 let data = {
-  agenda: load('agenda', null),
-  hosts: load('hosts', [
-    { name: 'Алина', nameNl: 'Alina', nameEn: 'Alina', role: 'parent' },
-    { name: 'Саша', nameNl: 'Alex', nameEn: 'Alex', role: 'parent' },
+  agenda: load('agenda', [
+    {time:'14:00',desc:{ru:'Сбор гостей',nl:'Aankomst gasten',en:'Guests arrive'}},
+    {time:'14:30',desc:{ru:'Игры и развлечения',nl:'Spelletjes en activiteiten',en:'Games and activities'}},
+    {time:'15:30',desc:{ru:'Торт и поздравления',nl:'Taart en felicitaties',en:'Cake and congratulations'}},
+    {time:'16:00',desc:{ru:'Свободное время',nl:'Vrij spelen',en:'Free time'}},
+    {time:'17:00',desc:{ru:'Окончание праздника',nl:'Einde feest',en:'End of party'}},
   ]),
-  children: load('children', []),
-  parents: load('parents', []),
-  siblingGroups: load('siblingGroups', []),
   wishlist: load('wishlist', []),
   orgTasks: load('orgTasks', []),
   orgNotes: load('orgNotes', ''),
+  registrations: load('registrations', []),
 };
 
-if (data.agenda === null) {
-  data.agenda = T.ru.agendaDefault.map(a => ({...a}));
+function t(k) { return T[lang]?.[k] || T.en[k] || k; }
+function allergenList() { return ALLERGENS[lang] || ALLERGENS.en; }
+
+function saveReg() { save('reg', reg); }
+function saveData() { for (let k of Object.keys(data)) save(k, data[k]); }
+
+const STEPS = ['lang','children','parents','photo','location','agenda','wishlist','done'];
+
+function goStep(id) {
+  currentStep = id;
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + id).classList.add('active');
+  renderProgress();
+  renderAll();
 }
 
-function saveAll() {
-  for (let k of Object.keys(data)) save(k, data[k]);
+function renderProgress() {
+  const bar = document.getElementById('progress-bar');
+  if (currentStep === 'lang' || currentStep === 'org') { bar.innerHTML = ''; return; }
+  const steps = STEPS.filter(s => s !== 'lang');
+  const idx = steps.indexOf(currentStep);
+  bar.innerHTML = steps.map((s, i) =>
+    `<div class="progress-dot ${i < idx ? 'done' : ''} ${i === idx ? 'current' : ''}"></div>`
+  ).join('');
 }
 
-let currentTab = 'agenda';
-
-function showTab(id) {
-  currentTab = id;
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  const tabs = document.querySelectorAll('.tab');
-  const tabKeys = ['agenda', 'location', 'guests', 'wishlist', 'org'];
-  const idx = tabKeys.indexOf(id);
-  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
-  render();
+function chooseLang(l) {
+  lang = l;
+  save('lang', l);
+  document.documentElement.lang = l;
+  goStep('children');
 }
 
-function render() {
-  renderAgenda();
-  renderHosts();
-  renderChildren();
-  renderParents();
-  renderSiblingGroups();
-  renderWishlist();
-  renderOrg();
-  updateSelects();
+function applyLang() {
+  if (!lang) return;
+  document.getElementById('h-title').textContent = t('title');
+  document.getElementById('h-subtitle').textContent = t('subtitle');
+  document.title = t('title');
+  document.getElementById('t-children-title').textContent = t('childrenTitle');
+  document.getElementById('t-children-sub').textContent = t('childrenSub');
+  document.getElementById('reg-child-name').placeholder = t('childPlaceholder');
+  document.getElementById('t-parents-title').textContent = t('parentsTitle');
+  document.getElementById('t-parents-sub').textContent = t('parentsSub');
+  document.getElementById('reg-parent-name').placeholder = t('parentPlaceholder');
+  document.getElementById('t-photo-title').textContent = t('photoTitle');
+  document.getElementById('t-photo-sub').textContent = t('photoSub');
+  document.getElementById('t-loc-title').textContent = t('locTitle');
+  document.getElementById('t-loc-maps').textContent = t('locMaps');
+  document.getElementById('t-loc-site').textContent = t('locSite');
+  document.getElementById('t-parking').textContent = t('parking');
+  document.getElementById('t-agenda-title').textContent = t('agendaTitle');
+  document.getElementById('agenda-desc').placeholder = t('agendaPlaceholder');
+  document.getElementById('t-wish-title').textContent = t('wishTitle');
+  document.getElementById('t-wish-sub').textContent = t('wishSub');
+  document.getElementById('wish-name').placeholder = t('wishNamePh');
+  document.getElementById('wish-url').placeholder = t('wishUrlPh');
+  document.getElementById('wish-note').placeholder = t('wishNotePh');
+  document.getElementById('t-btn-add-wish').textContent = t('addWish');
+  document.getElementById('t-done-title').textContent = t('doneTitle');
+  document.getElementById('t-done-sub').textContent = t('doneSub');
+  // nav buttons
+  document.getElementById('t-back-lang').textContent = t('back');
+  document.getElementById('t-next-parents').textContent = t('next');
+  document.getElementById('t-back-children').textContent = t('back');
+  document.getElementById('t-next-photo').textContent = t('next');
+  document.getElementById('t-back-parents').textContent = t('back');
+  document.getElementById('t-next-location').textContent = t('next');
+  document.getElementById('t-back-photo').textContent = t('back');
+  document.getElementById('t-next-agenda').textContent = t('next');
+  document.getElementById('t-back-location').textContent = t('back');
+  document.getElementById('t-next-wishlist').textContent = t('next');
+  document.getElementById('t-back-agenda').textContent = t('back');
+  document.getElementById('t-finish').textContent = t('finish');
+  document.getElementById('t-back-wishlist').textContent = t('back');
+}
+
+function allergenCheckboxes(selected, onChange) {
+  return `<div class="checkbox-grid">${allergenList().map((a, i) =>
+    `<label><input type="checkbox" ${selected.includes(a) ? 'checked' : ''} onchange="${onChange}(${i}, this.checked)">${a}</label>`
+  ).join('')}</div>`;
+}
+
+function renderRegChildren() {
+  const el = document.getElementById('reg-children');
+  el.innerHTML = reg.children.map((c, i) => `
+    <div class="person-card">
+      <div class="person-header">
+        <strong>${esc(c.name)}</strong>
+        <button class="btn-danger btn-sm" onclick="regRemoveChild(${i})">✕</button>
+      </div>
+      <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.25rem;">${t('allergens')}</div>
+      ${allergenCheckboxes(c.allergens, `toggleChildAllergen.bind(null,${i})`)}
+    </div>
+  `).join('');
+}
+window.toggleChildAllergen = (ci, ai, checked) => {
+  const a = allergenList()[ai];
+  if (checked && !reg.children[ci].allergens.includes(a)) reg.children[ci].allergens.push(a);
+  if (!checked) reg.children[ci].allergens = reg.children[ci].allergens.filter(x => x !== a);
+  saveReg();
+};
+function regAddChild() {
+  const inp = document.getElementById('reg-child-name');
+  const name = inp.value.trim();
+  if (!name) return;
+  reg.children.push({ name, allergens: [] });
+  saveReg(); renderRegChildren();
+  inp.value = '';
+}
+function regRemoveChild(i) { reg.children.splice(i, 1); saveReg(); renderRegChildren(); }
+
+function renderRegParents() {
+  const el = document.getElementById('reg-parents');
+  el.innerHTML = reg.parents.map((p, i) => `
+    <div class="person-card">
+      <div class="person-header">
+        <strong>${esc(p.name)}</strong>
+        <button class="btn-danger btn-sm" onclick="regRemoveParent(${i})">✕</button>
+      </div>
+      <div style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.25rem;">${t('allergens')}</div>
+      ${allergenCheckboxes(p.allergens, `toggleParentAllergen.bind(null,${i})`)}
+    </div>
+  `).join('');
+}
+window.toggleParentAllergen = (pi, ai, checked) => {
+  const a = allergenList()[ai];
+  if (checked && !reg.parents[pi].allergens.includes(a)) reg.parents[pi].allergens.push(a);
+  if (!checked) reg.parents[pi].allergens = reg.parents[pi].allergens.filter(x => x !== a);
+  saveReg();
+};
+function regAddParent() {
+  const inp = document.getElementById('reg-parent-name');
+  const name = inp.value.trim();
+  if (!name) return;
+  reg.parents.push({ name, allergens: [] });
+  saveReg(); renderRegParents();
+  inp.value = '';
+}
+function regRemoveParent(i) { reg.parents.splice(i, 1); saveReg(); renderRegParents(); }
+
+function handlePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    reg.photo = e.target.result;
+    saveReg(); renderPhoto();
+  };
+  reader.readAsDataURL(file);
+}
+function renderPhoto() {
+  const el = document.getElementById('photo-placeholder');
+  if (reg.photo) {
+    el.innerHTML = `<img src="${reg.photo}" alt="photo"><br><button class="btn-sm btn-danger" onclick="event.stopPropagation();reg.photo=null;saveReg();renderPhoto();" style="margin-top:0.5rem;">✕</button>`;
+  } else {
+    el.textContent = t('photoPlaceholder');
+  }
 }
 
 function renderAgenda() {
   const el = document.getElementById('agenda-list');
-  if (!data.agenda.length) {
-    el.innerHTML = `<p style="color:var(--text-muted)">${t('agendaEmpty')}</p>`;
-    return;
-  }
-  el.innerHTML = data.agenda
-    .sort((a, b) => a.time.localeCompare(b.time))
-    .map((item, i) => `
+  const sorted = [...data.agenda].sort((a,b) => a.time.localeCompare(b.time));
+  el.innerHTML = sorted.map((item, i) => {
+    const desc = typeof item.desc === 'object' ? (item.desc[lang] || item.desc.en || '') : item.desc;
+    return `
       <div class="agenda-item">
         <span class="agenda-time">${item.time}</span>
-        <span style="flex:1">${esc(item.desc)}</span>
-        <button class="btn-danger btn-sm" onclick="removeAgenda(${i})">✕</button>
-      </div>
-    `).join('');
+        <span style="flex:1">${esc(desc)}</span>
+        ${isAdmin ? `<button class="btn-danger btn-sm" onclick="removeAgenda(${data.agenda.indexOf(item)})">✕</button>` : ''}
+      </div>`;
+  }).join('');
+  document.getElementById('agenda-admin-form').style.display = isAdmin ? 'block' : 'none';
 }
-
 function addAgendaItem() {
   const time = document.getElementById('agenda-time').value;
   const desc = document.getElementById('agenda-desc').value.trim();
   if (!time || !desc) return;
-  data.agenda.push({ time, desc });
-  saveAll(); render();
+  const descObj = {}; descObj[lang] = desc;
+  data.agenda.push({ time, desc: descObj });
+  saveData(); renderAgenda();
   document.getElementById('agenda-time').value = '';
   document.getElementById('agenda-desc').value = '';
 }
+function removeAgenda(i) { data.agenda.splice(i, 1); saveData(); renderAgenda(); }
 
-function removeAgenda(i) { data.agenda.splice(i, 1); saveAll(); render(); }
-
-function hostName(h) {
-  if (lang === 'nl' && h.nameNl) return h.nameNl;
-  if (lang === 'en' && h.nameEn) return h.nameEn;
-  return h.name;
-}
-
-function renderHosts() {
-  const el = document.getElementById('hosts-list');
-  el.innerHTML = data.hosts.map((h, i) => `
-    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">
-      <span class="badge ${h.role === 'parent' ? 'badge-pink' : 'badge-purple'}">
-        ${h.role === 'parent' ? t('badgeParent') : t('badgeFriend')}
-      </span>
-      <span>${esc(hostName(h))}</span>
-      <button class="btn-danger btn-sm" onclick="removeHost(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function addHost() {
-  const name = document.getElementById('host-name').value.trim();
-  const role = document.getElementById('host-role').value;
-  if (!name) return;
-  data.hosts.push({ name, role });
-  saveAll(); render();
-  document.getElementById('host-name').value = '';
-}
-
-function removeHost(i) { data.hosts.splice(i, 1); saveAll(); render(); }
-
-function renderChildren() {
-  const el = document.getElementById('children-list');
-  el.innerHTML = data.children.map((c, i) => {
-    const ps = data.parents.filter(p => p.childIndex === i);
-    const allergens = ps.flatMap(p => p.allergens).filter(Boolean);
-    return `
-      <div style="padding:0.4rem 0;border-bottom:1px solid var(--border);">
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <strong>${esc(c.name)}</strong>
-          ${ps.length ? '<span style="color:var(--text-muted);font-size:0.85rem;">← ' + ps.map(p=>esc(p.name)).join(', ') + '</span>' : ''}
-          <button class="btn-danger btn-sm" onclick="removeChild(${i})">✕</button>
-        </div>
-        ${allergens.length ? '<div class="allergen-tags">' + allergens.map(a => `<span class="allergen-tag">⚠️ ${esc(a)}</span>`).join('') + '</div>' : ''}
-      </div>
-    `;
-  }).join('');
-}
-
-function addChild() {
-  const name = document.getElementById('child-name').value.trim();
-  if (!name) return;
-  data.children.push({ name });
-  saveAll(); render();
-  document.getElementById('child-name').value = '';
-}
-
-function removeChild(i) {
-  data.parents = data.parents.filter(p => p.childIndex !== i)
-    .map(p => ({ ...p, childIndex: p.childIndex > i ? p.childIndex - 1 : p.childIndex }));
-  data.siblingGroups = data.siblingGroups
-    .map(g => g.filter(idx => idx !== i).map(idx => idx > i ? idx - 1 : idx))
-    .filter(g => g.length > 1);
-  data.children.splice(i, 1);
-  saveAll(); render();
-}
-
-function renderParents() {
-  const el = document.getElementById('parents-list');
-  el.innerHTML = data.parents.map((p, i) => `
-    <div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;flex-wrap:wrap;">
-      <span>${esc(p.name)}</span>
-      <span style="color:var(--text-muted);font-size:0.85rem;">→ ${data.children[p.childIndex]?.name || '?'}</span>
-      ${p.allergens.length ? p.allergens.map(a => `<span class="allergen-tag">⚠️ ${esc(a)}</span>`).join('') : ''}
-      <button class="btn-danger btn-sm" onclick="removeParent(${i})">✕</button>
-    </div>
-  `).join('');
-}
-
-function addParent() {
-  const name = document.getElementById('parent-name').value.trim();
-  const childIndex = parseInt(document.getElementById('parent-child').value);
-  const allergens = document.getElementById('parent-allergens').value
-    .split(',').map(s => s.trim()).filter(Boolean);
-  if (!name || isNaN(childIndex)) return;
-  data.parents.push({ name, childIndex, allergens });
-  saveAll(); render();
-  document.getElementById('parent-name').value = '';
-  document.getElementById('parent-allergens').value = '';
-}
-
-function removeParent(i) { data.parents.splice(i, 1); saveAll(); render(); }
-
-function renderSiblingGroups() {
-  const el = document.getElementById('sibling-groups');
-  el.innerHTML = data.siblingGroups.map((g, i) => `
-    <div class="sibling-group">
-      👫 ${g.map(idx => esc(data.children[idx]?.name || '?')).join(' + ')}
-      <button class="btn-danger btn-sm" onclick="removeSiblingGroup(${i})" style="margin-left:0.5rem;">✕</button>
-    </div>
-  `).join('');
-}
-
-function createSiblingGroup() {
-  const sel = document.getElementById('sibling-select');
-  const indices = Array.from(sel.selectedOptions).map(o => parseInt(o.value));
-  if (indices.length < 2) return;
-  data.siblingGroups.push(indices);
-  saveAll(); render();
-}
-
-function removeSiblingGroup(i) { data.siblingGroups.splice(i, 1); saveAll(); render(); }
-
-function getGiftGivers() {
-  const givers = [];
-  const inGroup = new Set(data.siblingGroups.flat());
-  data.children.forEach((c, i) => {
-    if (!inGroup.has(i)) givers.push({ label: c.name, type: 'child', indices: [i] });
-  });
-  data.siblingGroups.forEach((g) => {
-    const names = g.map(idx => data.children[idx]?.name || '?').join(' + ');
-    givers.push({ label: names, type: 'group', indices: g });
-  });
-  data.hosts.filter(h => h.role === 'friend').forEach(h => {
-    givers.push({ label: h.name, type: 'friend', indices: [] });
-  });
-  return givers;
+function getFamilyLabel() {
+  const names = [...reg.parents.map(p=>p.name), ...reg.children.map(c=>c.name)].filter(Boolean);
+  return names.length ? names.join(' & ') : familyId.slice(0, 6);
 }
 
 function renderWishlist() {
   const el = document.getElementById('wishlist-items');
-  const givers = getGiftGivers();
+  const myLabel = getFamilyLabel();
   el.innerHTML = data.wishlist.map((w, i) => {
     const booked = w.bookedBy != null;
-    const bookerLabel = booked ? (typeof w.bookedBy === 'string' ? w.bookedBy : givers[w.bookedBy]?.label || '?') : '';
+    const mine = w.bookedByFamily === familyId;
     return `
-      <div class="wishlist-item ${booked ? 'booked' : ''}">
+      <div class="wishlist-item ${booked ? (mine ? 'booked-by-me' : 'booked') : ''}">
         <div class="wishlist-info">
           <strong>${w.url ? `<a href="${esc(w.url)}" target="_blank">${esc(w.name)}</a>` : esc(w.name)}</strong>
           ${w.note ? `<div style="font-size:0.85rem;color:var(--text-muted);">${esc(w.note)}</div>` : ''}
-          ${booked ? `<div><span class="badge badge-green">🎁 ${t('booked')}: ${esc(bookerLabel)}</span></div>` : ''}
+          ${mine ? `<div><span class="badge badge-green">🎁 ${t('bookedByYou')}</span></div>` : ''}
+          ${booked && !mine ? `<div><span class="badge badge-pink">🎁 ${t('booked')}</span></div>` : ''}
         </div>
-        <div class="wishlist-actions">
-          ${!booked ? `
-            <select onchange="bookWish(${i}, this.value)" style="width:auto;margin:0;">
-              <option value="">${t('book')}</option>
-              ${givers.map((g, gi) => `<option value="${gi}">${esc(g.label)}</option>`).join('')}
-              <option value="__custom">${t('bookOther')}</option>
-            </select>
-          ` : `
-            <button class="btn-secondary btn-sm" onclick="unbookWish(${i})">${t('cancel')}</button>
-          `}
-          <button class="btn-danger btn-sm" onclick="removeWish(${i})">✕</button>
+        <div style="flex-shrink:0;margin-left:0.5rem;">
+          ${!booked ? `<button class="btn-primary btn-sm" onclick="bookWish(${i})">${t('book')}</button>` : ''}
+          ${mine ? `<button class="btn-secondary btn-sm" onclick="unbookWish(${i})">${t('cancel')}</button>` : ''}
+          ${isAdmin ? `<button class="btn-danger btn-sm" onclick="removeWish(${i})" style="margin-left:0.25rem;">✕</button>` : ''}
         </div>
-      </div>
-    `;
-  }).join('') || `<p style="color:var(--text-muted)">${t('wishEmpty')}</p>`;
+      </div>`;
+  }).join('') || '<p style="color:var(--text-muted)">—</p>';
+  document.getElementById('wish-admin-form').style.display = isAdmin ? 'block' : 'none';
 }
-
 function addWish() {
   const name = document.getElementById('wish-name').value.trim();
   const url = document.getElementById('wish-url').value.trim();
   const note = document.getElementById('wish-note').value.trim();
   if (!name) return;
-  data.wishlist.push({ name, url, note, bookedBy: null });
-  saveAll(); render();
+  data.wishlist.push({ name, url, note, bookedBy: null, bookedByFamily: null });
+  saveData(); renderWishlist();
   document.getElementById('wish-name').value = '';
   document.getElementById('wish-url').value = '';
   document.getElementById('wish-note').value = '';
 }
-
-function bookWish(i, val) {
-  if (val === '__custom') {
-    const name = prompt(t('promptName'));
-    if (name) { data.wishlist[i].bookedBy = name; saveAll(); render(); }
-    return;
+function bookWish(i) {
+  const already = data.wishlist.some(w => w.bookedByFamily === familyId);
+  if (already && !isAdmin) {
+    const msg = {ru:'Вы уже забронировали подарок. Сначала отмените текущий.',nl:'U heeft al een cadeau gereserveerd. Annuleer eerst het huidige.',en:'You already booked a gift. Cancel the current one first.'};
+    alert(msg[lang] || msg.en); return;
   }
-  if (val === '') return;
-  data.wishlist[i].bookedBy = parseInt(val);
-  saveAll(); render();
+  data.wishlist[i].bookedBy = getFamilyLabel();
+  data.wishlist[i].bookedByFamily = familyId;
+  saveData(); renderWishlist();
+}
+function unbookWish(i) {
+  data.wishlist[i].bookedBy = null;
+  data.wishlist[i].bookedByFamily = null;
+  saveData(); renderWishlist();
+}
+function removeWish(i) { data.wishlist.splice(i, 1); saveData(); renderWishlist(); }
+
+function saveRegistration() {
+  const existing = data.registrations.findIndex(r => r.familyId === familyId);
+  const entry = { familyId, lang, children: reg.children, parents: reg.parents, photo: reg.photo, timestamp: new Date().toISOString() };
+  if (existing >= 0) data.registrations[existing] = entry;
+  else data.registrations.push(entry);
+  saveData();
 }
 
-function unbookWish(i) { data.wishlist[i].bookedBy = null; saveAll(); render(); }
-function removeWish(i) { data.wishlist.splice(i, 1); saveAll(); render(); }
+function renderSummary() {
+  saveRegistration();
+  const el = document.getElementById('reg-summary');
+  let html = '';
+  if (reg.children.length) {
+    html += `<div class="summary-section"><h4>${t('children')}</h4>`;
+    reg.children.forEach(c => {
+      html += `<div><strong>${esc(c.name)}</strong>`;
+      if (c.allergens.length) html += ` — <span style="color:#92400e">${c.allergens.map(esc).join(', ')}</span>`;
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  if (reg.parents.length) {
+    html += `<div class="summary-section"><h4>${t('parents')}</h4>`;
+    reg.parents.forEach(p => {
+      html += `<div><strong>${esc(p.name)}</strong>`;
+      if (p.allergens.length) html += ` — <span style="color:#92400e">${p.allergens.map(esc).join(', ')}</span>`;
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+  const myGift = data.wishlist.find(w => w.bookedByFamily === familyId);
+  if (myGift) {
+    html += `<div class="summary-section"><h4>🎁</h4><div>${esc(myGift.name)}</div></div>`;
+  }
+  if (reg.photo) {
+    html += `<div style="margin-top:0.5rem;"><img src="${reg.photo}" style="max-width:150px;border-radius:8px;"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function toggleAdmin() {
+  if (currentStep === 'org') {
+    isAdmin = false; save('admin', false);
+    goStep(lang ? 'children' : 'lang');
+  } else {
+    isAdmin = !isAdmin; save('admin', isAdmin);
+    if (isAdmin) goStep('org');
+    else renderAll();
+  }
+  document.getElementById('admin-btn').textContent = isAdmin ? '⚙️ ✓' : '⚙️';
+}
 
 function renderOrg() {
-  const hosts = data.hosts.filter(h => h.role === 'parent' || h.role === 'friend');
   const el = document.getElementById('org-tasks');
   el.innerHTML = data.orgTasks.map((t_, i) => `
     <div class="checklist-item ${t_.done ? 'done' : ''}">
@@ -870,49 +815,46 @@ function renderOrg() {
       ${t_.assignee ? `<span class="badge badge-purple">${esc(t_.assignee)}</span>` : ''}
       <button class="btn-danger btn-sm" onclick="removeOrgTask(${i})">✕</button>
     </div>
-  `).join('') || `<p style="color:var(--text-muted)">${t('orgNoTasks')}</p>`;
-
-  const sel = document.getElementById('org-assignee');
-  const current = sel.value;
-  sel.innerHTML = `<option value="">${t('orgWho')}</option>` +
-    hosts.map(h => `<option value="${esc(h.name)}">${esc(hostName(h))}</option>`).join('');
-  sel.value = current;
-
+  `).join('') || '<p style="color:var(--text-muted)">No tasks</p>';
   document.getElementById('org-notes').value = data.orgNotes;
-}
 
+  const regEl = document.getElementById('all-registrations');
+  regEl.innerHTML = data.registrations.map(r => `
+    <div class="person-card">
+      <strong>${t('family')}: ${[...r.parents.map(p=>p.name),...r.children.map(c=>c.name)].join(', ')}</strong>
+      ${r.children.map(c => `<div style="font-size:0.85rem;">🧒 ${esc(c.name)}${c.allergens.length ? ' ⚠️ ' + c.allergens.join(', ') : ''}</div>`).join('')}
+      ${r.parents.map(p => `<div style="font-size:0.85rem;">👤 ${esc(p.name)}${p.allergens.length ? ' ⚠️ ' + p.allergens.join(', ') : ''}</div>`).join('')}
+      ${r.photo ? `<img src="${r.photo}" style="max-width:80px;border-radius:6px;margin-top:0.3rem;">` : ''}
+    </div>
+  `).join('') || '<p style="color:var(--text-muted)">No registrations yet</p>';
+}
 function addOrgTask() {
   const task = document.getElementById('org-task').value.trim();
   const assignee = document.getElementById('org-assignee').value;
   if (!task) return;
   data.orgTasks.push({ task, assignee, done: false });
-  saveAll(); render();
+  saveData(); renderOrg();
   document.getElementById('org-task').value = '';
 }
-
-function toggleOrgTask(i) { data.orgTasks[i].done = !data.orgTasks[i].done; saveAll(); render(); }
-function removeOrgTask(i) { data.orgTasks.splice(i, 1); saveAll(); render(); }
+function toggleOrgTask(i) { data.orgTasks[i].done = !data.orgTasks[i].done; saveData(); renderOrg(); }
+function removeOrgTask(i) { data.orgTasks.splice(i, 1); saveData(); renderOrg(); }
 function saveOrgNotes() { data.orgNotes = document.getElementById('org-notes').value; save('orgNotes', data.orgNotes); }
 
-function updateSelects() {
-  const childSel = document.getElementById('parent-child');
-  const current = childSel.value;
-  childSel.innerHTML = `<option value="">${t('selectChild')}</option>` +
-    data.children.map((c, i) => `<option value="${i}">${esc(c.name)}</option>`).join('');
-  childSel.value = current;
-
-  const sibSel = document.getElementById('sibling-select');
-  sibSel.innerHTML = data.children.map((c, i) => `<option value="${i}">${esc(c.name)}</option>`).join('');
+function renderAll() {
+  applyLang();
+  renderRegChildren();
+  renderRegParents();
+  renderPhoto();
+  renderAgenda();
+  renderWishlist();
+  if (currentStep === 'done') renderSummary();
+  if (currentStep === 'org') renderOrg();
 }
 
-function esc(s) {
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
-}
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-applyLang();
-render();
+if (lang) applyLang();
+goStep(currentStep);
 </script>
 </body>
 </html>
