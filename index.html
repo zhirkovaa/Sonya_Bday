@@ -603,8 +603,8 @@ function save(key, val) { localStorage.setItem(LS_KEY + key, JSON.stringify(val)
 let data = {
   agenda: load('agenda', null),
   hosts: load('hosts', [
-    { name: 'Аня', role: 'parent' },
-    { name: 'Саша', role: 'parent' },
+    { name: 'Алина', nameNl: 'Alina', nameEn: 'Alina', role: 'parent' },
+    { name: 'Саша', nameNl: 'Alex', nameEn: 'Alex', role: 'parent' },
   ]),
   children: load('children', []),
   parents: load('parents', []),
@@ -676,6 +676,12 @@ function addAgendaItem() {
 
 function removeAgenda(i) { data.agenda.splice(i, 1); saveAll(); render(); }
 
+function hostName(h) {
+  if (lang === 'nl' && h.nameNl) return h.nameNl;
+  if (lang === 'en' && h.nameEn) return h.nameEn;
+  return h.name;
+}
+
 function renderHosts() {
   const el = document.getElementById('hosts-list');
   el.innerHTML = data.hosts.map((h, i) => `
@@ -683,7 +689,7 @@ function renderHosts() {
       <span class="badge ${h.role === 'parent' ? 'badge-pink' : 'badge-purple'}">
         ${h.role === 'parent' ? t('badgeParent') : t('badgeFriend')}
       </span>
-      <span>${esc(h.name)}</span>
+      <span>${esc(hostName(h))}</span>
       <button class="btn-danger btn-sm" onclick="removeHost(${i})">✕</button>
     </div>
   `).join('');
@@ -869,7 +875,7 @@ function renderOrg() {
   const sel = document.getElementById('org-assignee');
   const current = sel.value;
   sel.innerHTML = `<option value="">${t('orgWho')}</option>` +
-    hosts.map(h => `<option value="${esc(h.name)}">${esc(h.name)}</option>`).join('');
+    hosts.map(h => `<option value="${esc(h.name)}">${esc(hostName(h))}</option>`).join('');
   sel.value = current;
 
   document.getElementById('org-notes').value = data.orgNotes;
