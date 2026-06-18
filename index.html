@@ -149,6 +149,8 @@ button {
 .link-maps:hover { background: #bfdbfe; }
 .link-site { background: #d1fae5; color: #065f46; }
 .link-site:hover { background: #a7f3d0; }
+.link-cal { background: #ede9fe; color: #6d28d9; }
+.link-cal:hover { background: #ddd6fe; }
 .parking-note {
   background: #fef3c7; color: #92400e; padding: 0.5rem 0.75rem;
   border-radius: 8px; font-size: 0.9rem; margin-top: 0.75rem;
@@ -282,6 +284,9 @@ button {
       <a href="https://philipsfruittuin.nl/proeftuin" target="_blank" class="link-site" id="t-loc-site">🌐 Website</a>
     </div>
     <div class="parking-note" id="t-parking"></div>
+    <div class="location-links" style="margin-top:0.75rem;">
+      <a href="#" onclick="downloadICS();return false;" class="link-cal" id="t-loc-cal">📅 Add to calendar</a>
+    </div>
   </div>
   <div class="nav-buttons">
     <button class="btn-outline" onclick="goStep('photo')" id="t-back-photo"></button>
@@ -384,6 +389,7 @@ const T = {
     locTitle: '📍 Локация',
     locMaps: '📍 Открыть в Google Maps',
     locSite: '🌐 Сайт площадки',
+    locCal: '📅 Добавить в календарь',
     parking: '🅿️ Парковка бесплатная!',
     agendaTitle: '📋 Программа праздника',
     agendaPlaceholder: 'Описание',
@@ -423,6 +429,7 @@ const T = {
     locTitle: '📍 Locatie',
     locMaps: '📍 Open in Google Maps',
     locSite: '🌐 Website van de locatie',
+    locCal: '📅 Toevoegen aan agenda',
     parking: '🅿️ Gratis parkeren!',
     agendaTitle: '📋 Feestprogramma',
     agendaPlaceholder: 'Beschrijving',
@@ -462,6 +469,7 @@ const T = {
     locTitle: '📍 Location',
     locMaps: '📍 Open in Google Maps',
     locSite: '🌐 Venue website',
+    locCal: '📅 Add to calendar',
     parking: '🅿️ Free parking!',
     agendaTitle: '📋 Party Program',
     agendaPlaceholder: 'Description',
@@ -562,6 +570,7 @@ function applyLang() {
   document.getElementById('t-loc-title').textContent = t('locTitle');
   document.getElementById('t-loc-maps').textContent = t('locMaps');
   document.getElementById('t-loc-site').textContent = t('locSite');
+  document.getElementById('t-loc-cal').textContent = t('locCal');
   document.getElementById('t-parking').textContent = t('parking');
   document.getElementById('t-agenda-title').textContent = t('agendaTitle');
   document.getElementById('agenda-desc').placeholder = t('agendaPlaceholder');
@@ -670,6 +679,35 @@ function renderPhoto() {
   } else {
     el.textContent = t('photoPlaceholder');
   }
+}
+
+const EVENT_DATE = '20260704';
+const EVENT_START = '140000';
+const EVENT_END = '170000';
+
+function downloadICS() {
+  const titles = {ru:"День Рождения Сони",nl:"Sonya's Verjaardag",en:"Sonya's Birthday"};
+  const title = titles[lang] || titles.en;
+  const loc = 'Pannenkoekenhuis De Proeftuin, Philips Fruittuin, Oirschotsedijk 14A, 5651 GC Eindhoven';
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//SonyaBday//EN',
+    'BEGIN:VEVENT',
+    `DTSTART:${EVENT_DATE}T${EVENT_START}`,
+    `DTEND:${EVENT_DATE}T${EVENT_END}`,
+    `SUMMARY:${title}`,
+    `LOCATION:${loc}`,
+    `DESCRIPTION:${title} - ${loc}`,
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+  const blob = new Blob([ics], {type:'text/calendar;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sonya-birthday.ics';
+  a.click();
+  URL.revokeObjectURL(a.href);
 }
 
 function renderAgenda() {
