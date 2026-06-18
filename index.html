@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>День Рождения Сони 🎂</title>
+<title>Sonya's Birthday 🎂</title>
 <style>
 :root {
   --pink: #f472b6;
@@ -34,9 +34,35 @@ body {
   color: white;
   text-align: center;
   padding: 2rem 1rem;
+  position: relative;
 }
 .header h1 { font-size: 2rem; margin-bottom: 0.25rem; }
 .header p { opacity: 0.9; font-size: 1.1rem; }
+
+.lang-switcher {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.25rem;
+}
+.lang-btn {
+  padding: 0.25rem 0.5rem;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 6px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.lang-btn:hover { background: rgba(255,255,255,0.3); }
+.lang-btn.active {
+  background: white;
+  color: var(--pink-dark);
+  border-color: white;
+}
 
 .tabs {
   display: flex;
@@ -105,20 +131,11 @@ button {
   font-weight: 500;
   transition: all 0.2s;
 }
-.btn-primary {
-  background: var(--pink-dark);
-  color: white;
-}
+.btn-primary { background: var(--pink-dark); color: white; }
 .btn-primary:hover { background: #be185d; }
-.btn-secondary {
-  background: var(--purple-light);
-  color: #6d28d9;
-}
+.btn-secondary { background: var(--purple-light); color: #6d28d9; }
 .btn-secondary:hover { background: #ddd6fe; }
-.btn-danger {
-  background: #fee2e2;
-  color: var(--danger);
-}
+.btn-danger { background: #fee2e2; color: var(--danger); }
 .btn-danger:hover { background: #fecaca; }
 .btn-sm { padding: 0.3rem 0.6rem; font-size: 0.8rem; }
 
@@ -132,21 +149,6 @@ button {
 .badge-pink { background: var(--pink-light); color: var(--pink-dark); }
 .badge-green { background: #d1fae5; color: #065f46; }
 .badge-purple { background: var(--purple-light); color: #6d28d9; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9rem;
-}
-th, td {
-  padding: 0.5rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-}
-th { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
-
-.guest-row { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.guest-row > * { flex-shrink: 0; }
 
 .allergen-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem; }
 .allergen-tag {
@@ -179,10 +181,7 @@ th { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transfo
   border-radius: 8px;
   margin-bottom: 0.5rem;
 }
-.wishlist-item.booked {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-}
+.wishlist-item.booked { background: #f0fdf4; border-color: #bbf7d0; }
 .wishlist-info { flex: 1; }
 .wishlist-info a { color: var(--pink-dark); text-decoration: none; }
 .wishlist-info a:hover { text-decoration: underline; }
@@ -228,146 +227,372 @@ th { font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transfo
 <body>
 
 <div class="header">
-  <h1>🎈 День Рождения Сони! 🎈</h1>
-  <p>Добро пожаловать на страничку праздника</p>
+  <div class="lang-switcher">
+    <button class="lang-btn" onclick="setLang('ru')">RU</button>
+    <button class="lang-btn" onclick="setLang('nl')">NL</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+  <h1 id="h-title"></h1>
+  <p id="h-subtitle"></p>
 </div>
 
-<div class="tabs">
-  <button class="tab active" onclick="showTab('agenda')">📋 Агенда</button>
-  <button class="tab" onclick="showTab('location')">📍 Локация</button>
-  <button class="tab" onclick="showTab('guests')">👨‍👩‍👧 Гости</button>
-  <button class="tab" onclick="showTab('wishlist')">🎁 Виш-лист</button>
-  <button class="tab" onclick="showTab('org')">🔧 Организация</button>
-</div>
+<div class="tabs" id="tabs-bar"></div>
 
-<!-- AGENDA -->
 <div id="agenda" class="page active">
   <div class="card">
-    <h2>📋 Программа праздника</h2>
+    <h2 id="agenda-title"></h2>
     <div id="agenda-list"></div>
   </div>
   <div class="card">
-    <h3>Добавить пункт</h3>
+    <h3 id="agenda-add-title"></h3>
     <div class="form-row">
       <input type="time" id="agenda-time" />
-      <input type="text" id="agenda-desc" placeholder="Описание" />
+      <input type="text" id="agenda-desc" />
       <button class="btn-primary" onclick="addAgendaItem()">+</button>
     </div>
   </div>
 </div>
 
-<!-- LOCATION -->
 <div id="location" class="page">
   <div class="card">
-    <h2>📍 Локация</h2>
+    <h2 id="loc-title"></h2>
     <div class="location-map">
       <h3>Philips Fruittuin</h3>
-      <p style="margin: 0.75rem 0; color: var(--text-muted);">
-        Fruittuin van West, Amsterdam
-      </p>
-      <a href="https://maps.google.com/?q=Philips+Fruittuin+Amsterdam" target="_blank">
-        📍 Открыть в Google Maps
-      </a>
+      <p style="margin: 0.75rem 0; color: var(--text-muted);">Fruittuin van West, Amsterdam</p>
+      <a href="https://maps.google.com/?q=Philips+Fruittuin+Amsterdam" target="_blank" id="loc-maps-link"></a>
     </div>
   </div>
 </div>
 
-<!-- GUESTS -->
 <div id="guests" class="page">
   <div class="card">
-    <h2>👨‍👩‍👧 Родители Сони и друзья</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Организаторы и взрослые гости без детей</p>
+    <h2 id="hosts-title"></h2>
+    <p id="hosts-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
     <div id="hosts-list"></div>
     <div class="form-row" style="margin-top: 0.5rem;">
-      <input type="text" id="host-name" placeholder="Имя" />
-      <select id="host-role" style="max-width: 160px;">
-        <option value="parent">Родитель Сони</option>
-        <option value="friend">Друг семьи</option>
-      </select>
+      <input type="text" id="host-name" />
+      <select id="host-role" style="max-width: 160px;"></select>
       <button class="btn-primary" onclick="addHost()">+</button>
     </div>
   </div>
 
   <div class="card">
-    <h2>🧒 Приглашённые дети</h2>
+    <h2 id="children-title"></h2>
     <div id="children-list"></div>
     <div class="form-row" style="margin-top: 0.5rem;">
-      <input type="text" id="child-name" placeholder="Имя ребёнка" />
-      <button class="btn-primary" onclick="addChild()">+ Ребёнок</button>
+      <input type="text" id="child-name" />
+      <button class="btn-primary" onclick="addChild()" id="btn-add-child"></button>
     </div>
   </div>
 
   <div class="card">
-    <h2>👨‍👩‍👧 Родители гостей</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Родители могут добавить себя и указать аллергены ребёнка</p>
+    <h2 id="parents-title"></h2>
+    <p id="parents-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
     <div id="parents-list"></div>
     <div style="margin-top: 0.5rem;">
       <div class="form-row">
-        <input type="text" id="parent-name" placeholder="Имя родителя" />
-        <select id="parent-child" style="max-width: 200px;">
-          <option value="">Выберите ребёнка...</option>
-        </select>
+        <input type="text" id="parent-name" />
+        <select id="parent-child" style="max-width: 200px;"></select>
       </div>
       <div class="form-row" style="margin-top: 0;">
-        <input type="text" id="parent-allergens" placeholder="Аллергены (через запятую, напр.: свинина, орехи)" />
-        <button class="btn-primary" onclick="addParent()">+ Родитель</button>
+        <input type="text" id="parent-allergens" />
+        <button class="btn-primary" onclick="addParent()" id="btn-add-parent"></button>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <h2>👫 Группы сиблингов (один подарок)</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;">Объедините братьев/сестёр для общего подарка</p>
+    <h2 id="siblings-title"></h2>
+    <p id="siblings-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.5rem;"></p>
     <div id="sibling-groups"></div>
     <div class="form-row" style="margin-top: 0.5rem;">
-      <select id="sibling-select" multiple style="min-height: 60px;">
-      </select>
-      <button class="btn-primary" onclick="createSiblingGroup()">Объединить</button>
+      <select id="sibling-select" multiple style="min-height: 60px;"></select>
+      <button class="btn-primary" onclick="createSiblingGroup()" id="btn-merge-siblings"></button>
     </div>
   </div>
 </div>
 
-<!-- WISHLIST -->
 <div id="wishlist" class="page">
   <div class="card">
-    <h2>🎁 Виш-лист</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
-      Забронируйте подарок, чтобы он не повторился. Сиблинги дарят один подарок на группу.
-    </p>
+    <h2 id="wish-title"></h2>
+    <p id="wish-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;"></p>
     <div id="wishlist-items"></div>
   </div>
   <div class="card">
-    <h3>Добавить подарок в виш-лист</h3>
-    <input type="text" id="wish-name" placeholder="Название подарка" />
-    <input type="url" id="wish-url" placeholder="Ссылка (необязательно)" />
-    <input type="text" id="wish-note" placeholder="Примечание (необязательно)" />
-    <button class="btn-primary" onclick="addWish()">Добавить</button>
+    <h3 id="wish-add-title"></h3>
+    <input type="text" id="wish-name" />
+    <input type="url" id="wish-url" />
+    <input type="text" id="wish-note" />
+    <button class="btn-primary" onclick="addWish()" id="btn-add-wish"></button>
   </div>
 </div>
 
-<!-- ORGANIZATION -->
 <div id="org" class="page">
   <div class="card">
-    <h2>🔧 Организация праздника</h2>
-    <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;">
-      Только для организаторов
-    </p>
+    <h2 id="org-title"></h2>
+    <p id="org-subtitle" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.75rem;"></p>
     <div id="org-tasks"></div>
     <div class="form-row" style="margin-top: 0.75rem;">
-      <input type="text" id="org-task" placeholder="Новая задача" />
-      <select id="org-assignee" style="max-width: 160px;">
-        <option value="">Кто?</option>
-      </select>
+      <input type="text" id="org-task" />
+      <select id="org-assignee" style="max-width: 160px;"></select>
       <button class="btn-primary" onclick="addOrgTask()">+</button>
     </div>
   </div>
   <div class="card">
-    <h2>💬 Заметки</h2>
-    <textarea id="org-notes" rows="5" placeholder="Общие заметки по организации..." oninput="saveOrgNotes()"></textarea>
+    <h2 id="org-notes-title"></h2>
+    <textarea id="org-notes" rows="5" oninput="saveOrgNotes()"></textarea>
   </div>
 </div>
 
 <script>
+const T = {
+  ru: {
+    title: '🎈 День Рождения Сони! 🎈',
+    subtitle: 'Добро пожаловать на страничку праздника',
+    tabAgenda: '📋 Агенда',
+    tabLocation: '📍 Локация',
+    tabGuests: '👨‍👩‍👧 Гости',
+    tabWishlist: '🎁 Виш-лист',
+    tabOrg: '🔧 Организация',
+    agendaTitle: '📋 Программа праздника',
+    agendaAdd: 'Добавить пункт',
+    agendaPlaceholder: 'Описание',
+    agendaEmpty: 'Пока нет пунктов',
+    agendaDefault: [
+      { time: '14:00', desc: 'Сбор гостей' },
+      { time: '14:30', desc: 'Игры и развлечения' },
+      { time: '15:30', desc: 'Торт и поздравления' },
+      { time: '16:00', desc: 'Свободное время' },
+      { time: '17:00', desc: 'Окончание праздника' },
+    ],
+    locTitle: '📍 Локация',
+    locMaps: '📍 Открыть в Google Maps',
+    hostsTitle: '👨‍👩‍👧 Родители Сони и друзья',
+    hostsSubtitle: 'Организаторы и взрослые гости без детей',
+    hostPlaceholder: 'Имя',
+    roleParent: 'Родитель Сони',
+    roleFriend: 'Друг семьи',
+    badgeParent: 'Родитель',
+    badgeFriend: 'Друг',
+    childrenTitle: '🧒 Приглашённые дети',
+    childPlaceholder: 'Имя ребёнка',
+    addChild: '+ Ребёнок',
+    parentsTitle: '👨‍👩‍👧 Родители гостей',
+    parentsSubtitle: 'Родители могут добавить себя и указать аллергены ребёнка',
+    parentPlaceholder: 'Имя родителя',
+    selectChild: 'Выберите ребёнка...',
+    allergenPlaceholder: 'Аллергены (через запятую, напр.: свинина, орехи)',
+    addParent: '+ Родитель',
+    siblingsTitle: '👫 Группы сиблингов (один подарок)',
+    siblingsSubtitle: 'Объедините братьев/сестёр для общего подарка',
+    mergeSiblings: 'Объединить',
+    wishTitle: '🎁 Виш-лист',
+    wishSubtitle: 'Забронируйте подарок, чтобы он не повторился. Сиблинги дарят один подарок на группу.',
+    wishAddTitle: 'Добавить подарок в виш-лист',
+    wishNamePlaceholder: 'Название подарка',
+    wishUrlPlaceholder: 'Ссылка (необязательно)',
+    wishNotePlaceholder: 'Примечание (необязательно)',
+    addWish: 'Добавить',
+    book: 'Забронировать...',
+    bookOther: 'Другой...',
+    booked: 'Забронировано',
+    cancel: 'Отменить',
+    wishEmpty: 'Виш-лист пуст',
+    promptName: 'Введите имя:',
+    orgTitle: '🔧 Организация праздника',
+    orgSubtitle: 'Только для организаторов',
+    orgTaskPlaceholder: 'Новая задача',
+    orgWho: 'Кто?',
+    orgNoTasks: 'Нет задач',
+    orgNotesTitle: '💬 Заметки',
+    orgNotesPlaceholder: 'Общие заметки по организации...',
+  },
+  nl: {
+    title: '🎈 Sonya\'s Verjaardag! 🎈',
+    subtitle: 'Welkom op de feestpagina',
+    tabAgenda: '📋 Agenda',
+    tabLocation: '📍 Locatie',
+    tabGuests: '👨‍👩‍👧 Gasten',
+    tabWishlist: '🎁 Verlanglijst',
+    tabOrg: '🔧 Organisatie',
+    agendaTitle: '📋 Feestprogramma',
+    agendaAdd: 'Punt toevoegen',
+    agendaPlaceholder: 'Beschrijving',
+    agendaEmpty: 'Nog geen punten',
+    agendaDefault: [
+      { time: '14:00', desc: 'Aankomst gasten' },
+      { time: '14:30', desc: 'Spelletjes en activiteiten' },
+      { time: '15:30', desc: 'Taart en felicitaties' },
+      { time: '16:00', desc: 'Vrij spelen' },
+      { time: '17:00', desc: 'Einde feest' },
+    ],
+    locTitle: '📍 Locatie',
+    locMaps: '📍 Open in Google Maps',
+    hostsTitle: '👨‍👩‍👧 Sonya\'s ouders en vrienden',
+    hostsSubtitle: 'Organisatoren en volwassen gasten zonder kinderen',
+    hostPlaceholder: 'Naam',
+    roleParent: 'Ouder van Sonya',
+    roleFriend: 'Vriend van de familie',
+    badgeParent: 'Ouder',
+    badgeFriend: 'Vriend',
+    childrenTitle: '🧒 Uitgenodigde kinderen',
+    childPlaceholder: 'Naam van het kind',
+    addChild: '+ Kind',
+    parentsTitle: '👨‍👩‍👧 Ouders van gasten',
+    parentsSubtitle: 'Ouders kunnen zichzelf toevoegen en allergieën van hun kind aangeven',
+    parentPlaceholder: 'Naam ouder',
+    selectChild: 'Kies een kind...',
+    allergenPlaceholder: 'Allergieën (kommagescheiden, bijv.: varkensvlees, noten)',
+    addParent: '+ Ouder',
+    siblingsTitle: '👫 Broers/zussen groepen (één cadeau)',
+    siblingsSubtitle: 'Groepeer broers en zussen voor een gezamenlijk cadeau',
+    mergeSiblings: 'Groeperen',
+    wishTitle: '🎁 Verlanglijst',
+    wishSubtitle: 'Reserveer een cadeau zodat het niet dubbel is. Broers/zussen geven één cadeau per groep.',
+    wishAddTitle: 'Cadeau toevoegen aan verlanglijst',
+    wishNamePlaceholder: 'Naam van het cadeau',
+    wishUrlPlaceholder: 'Link (optioneel)',
+    wishNotePlaceholder: 'Opmerking (optioneel)',
+    addWish: 'Toevoegen',
+    book: 'Reserveren...',
+    bookOther: 'Anders...',
+    booked: 'Gereserveerd',
+    cancel: 'Annuleren',
+    wishEmpty: 'Verlanglijst is leeg',
+    promptName: 'Voer naam in:',
+    orgTitle: '🔧 Feestorganisatie',
+    orgSubtitle: 'Alleen voor organisatoren',
+    orgTaskPlaceholder: 'Nieuwe taak',
+    orgWho: 'Wie?',
+    orgNoTasks: 'Geen taken',
+    orgNotesTitle: '💬 Notities',
+    orgNotesPlaceholder: 'Algemene organisatienotities...',
+  },
+  en: {
+    title: '🎈 Sonya\'s Birthday! 🎈',
+    subtitle: 'Welcome to the party page',
+    tabAgenda: '📋 Agenda',
+    tabLocation: '📍 Location',
+    tabGuests: '👨‍👩‍👧 Guests',
+    tabWishlist: '🎁 Wishlist',
+    tabOrg: '🔧 Organization',
+    agendaTitle: '📋 Party Program',
+    agendaAdd: 'Add item',
+    agendaPlaceholder: 'Description',
+    agendaEmpty: 'No items yet',
+    agendaDefault: [
+      { time: '14:00', desc: 'Guests arrive' },
+      { time: '14:30', desc: 'Games and activities' },
+      { time: '15:30', desc: 'Cake and congratulations' },
+      { time: '16:00', desc: 'Free time' },
+      { time: '17:00', desc: 'End of party' },
+    ],
+    locTitle: '📍 Location',
+    locMaps: '📍 Open in Google Maps',
+    hostsTitle: '👨‍👩‍👧 Sonya\'s parents & friends',
+    hostsSubtitle: 'Organizers and adult guests without children',
+    hostPlaceholder: 'Name',
+    roleParent: 'Sonya\'s parent',
+    roleFriend: 'Family friend',
+    badgeParent: 'Parent',
+    badgeFriend: 'Friend',
+    childrenTitle: '🧒 Invited children',
+    childPlaceholder: 'Child\'s name',
+    addChild: '+ Child',
+    parentsTitle: '👨‍👩‍👧 Guest parents',
+    parentsSubtitle: 'Parents can add themselves and specify their child\'s allergens',
+    parentPlaceholder: 'Parent\'s name',
+    selectChild: 'Select a child...',
+    allergenPlaceholder: 'Allergens (comma-separated, e.g.: pork, nuts)',
+    addParent: '+ Parent',
+    siblingsTitle: '👫 Sibling groups (one gift)',
+    siblingsSubtitle: 'Group siblings together for a shared gift',
+    mergeSiblings: 'Group',
+    wishTitle: '🎁 Wishlist',
+    wishSubtitle: 'Book a gift so it doesn\'t get duplicated. Siblings give one gift per group.',
+    wishAddTitle: 'Add a gift to the wishlist',
+    wishNamePlaceholder: 'Gift name',
+    wishUrlPlaceholder: 'Link (optional)',
+    wishNotePlaceholder: 'Note (optional)',
+    addWish: 'Add',
+    book: 'Book...',
+    bookOther: 'Other...',
+    booked: 'Booked',
+    cancel: 'Cancel',
+    wishEmpty: 'Wishlist is empty',
+    promptName: 'Enter name:',
+    orgTitle: '🔧 Party Organization',
+    orgSubtitle: 'Organizers only',
+    orgTaskPlaceholder: 'New task',
+    orgWho: 'Who?',
+    orgNoTasks: 'No tasks',
+    orgNotesTitle: '💬 Notes',
+    orgNotesPlaceholder: 'General organization notes...',
+  }
+};
+
+let lang = localStorage.getItem('sonya_bday_lang') || 'ru';
+function t(key) { return T[lang][key] || T.ru[key] || key; }
+
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('sonya_bday_lang', l);
+  document.documentElement.lang = l === 'nl' ? 'nl' : l === 'en' ? 'en' : 'ru';
+  applyLang();
+  render();
+}
+
+function applyLang() {
+  document.getElementById('h-title').textContent = t('title');
+  document.getElementById('h-subtitle').textContent = t('subtitle');
+  document.title = t('title');
+
+  const tabsBar = document.getElementById('tabs-bar');
+  const tabKeys = ['agenda', 'location', 'guests', 'wishlist', 'org'];
+  const tabLabels = [t('tabAgenda'), t('tabLocation'), t('tabGuests'), t('tabWishlist'), t('tabOrg')];
+  tabsBar.innerHTML = tabKeys.map((k, i) =>
+    `<button class="tab ${k === currentTab ? 'active' : ''}" onclick="showTab('${k}')">${tabLabels[i]}</button>`
+  ).join('');
+
+  document.getElementById('agenda-title').textContent = t('agendaTitle');
+  document.getElementById('agenda-add-title').textContent = t('agendaAdd');
+  document.getElementById('agenda-desc').placeholder = t('agendaPlaceholder');
+  document.getElementById('loc-title').textContent = t('locTitle');
+  document.getElementById('loc-maps-link').textContent = t('locMaps');
+  document.getElementById('hosts-title').textContent = t('hostsTitle');
+  document.getElementById('hosts-subtitle').textContent = t('hostsSubtitle');
+  document.getElementById('host-name').placeholder = t('hostPlaceholder');
+  document.getElementById('host-role').innerHTML =
+    `<option value="parent">${t('roleParent')}</option><option value="friend">${t('roleFriend')}</option>`;
+  document.getElementById('children-title').textContent = t('childrenTitle');
+  document.getElementById('child-name').placeholder = t('childPlaceholder');
+  document.getElementById('btn-add-child').textContent = t('addChild');
+  document.getElementById('parents-title').textContent = t('parentsTitle');
+  document.getElementById('parents-subtitle').textContent = t('parentsSubtitle');
+  document.getElementById('parent-name').placeholder = t('parentPlaceholder');
+  document.getElementById('parent-allergens').placeholder = t('allergenPlaceholder');
+  document.getElementById('btn-add-parent').textContent = t('addParent');
+  document.getElementById('siblings-title').textContent = t('siblingsTitle');
+  document.getElementById('siblings-subtitle').textContent = t('siblingsSubtitle');
+  document.getElementById('btn-merge-siblings').textContent = t('mergeSiblings');
+  document.getElementById('wish-title').textContent = t('wishTitle');
+  document.getElementById('wish-subtitle').textContent = t('wishSubtitle');
+  document.getElementById('wish-add-title').textContent = t('wishAddTitle');
+  document.getElementById('wish-name').placeholder = t('wishNamePlaceholder');
+  document.getElementById('wish-url').placeholder = t('wishUrlPlaceholder');
+  document.getElementById('wish-note').placeholder = t('wishNotePlaceholder');
+  document.getElementById('btn-add-wish').textContent = t('addWish');
+  document.getElementById('org-title').textContent = t('orgTitle');
+  document.getElementById('org-subtitle').textContent = t('orgSubtitle');
+  document.getElementById('org-task').placeholder = t('orgTaskPlaceholder');
+  document.getElementById('org-notes-title').textContent = t('orgNotesTitle');
+  document.getElementById('org-notes').placeholder = t('orgNotesPlaceholder');
+
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.trim().toLowerCase() === lang);
+  });
+}
+
 const LS_KEY = 'sonya_bday_';
 function load(key, def) {
   try { return JSON.parse(localStorage.getItem(LS_KEY + key)) || def; }
@@ -376,13 +601,7 @@ function load(key, def) {
 function save(key, val) { localStorage.setItem(LS_KEY + key, JSON.stringify(val)); }
 
 let data = {
-  agenda: load('agenda', [
-    { time: '14:00', desc: 'Сбор гостей' },
-    { time: '14:30', desc: 'Игры и развлечения' },
-    { time: '15:30', desc: 'Торт и поздравления' },
-    { time: '16:00', desc: 'Свободное время' },
-    { time: '17:00', desc: 'Окончание праздника' },
-  ]),
+  agenda: load('agenda', null),
   hosts: load('hosts', [
     { name: 'Аня', role: 'parent' },
     { name: 'Саша', role: 'parent' },
@@ -395,15 +614,25 @@ let data = {
   orgNotes: load('orgNotes', ''),
 };
 
+if (data.agenda === null) {
+  data.agenda = T.ru.agendaDefault.map(a => ({...a}));
+}
+
 function saveAll() {
   for (let k of Object.keys(data)) save(k, data[k]);
 }
 
+let currentTab = 'agenda';
+
 function showTab(id) {
+  currentTab = id;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  const tabs = document.querySelectorAll('.tab');
+  const tabKeys = ['agenda', 'location', 'guests', 'wishlist', 'org'];
+  const idx = tabKeys.indexOf(id);
+  if (idx >= 0 && tabs[idx]) tabs[idx].classList.add('active');
   render();
 }
 
@@ -420,7 +649,10 @@ function render() {
 
 function renderAgenda() {
   const el = document.getElementById('agenda-list');
-  if (!data.agenda.length) { el.innerHTML = '<p style="color:var(--text-muted)">Пока нет пунктов</p>'; return; }
+  if (!data.agenda.length) {
+    el.innerHTML = `<p style="color:var(--text-muted)">${t('agendaEmpty')}</p>`;
+    return;
+  }
   el.innerHTML = data.agenda
     .sort((a, b) => a.time.localeCompare(b.time))
     .map((item, i) => `
@@ -442,17 +674,14 @@ function addAgendaItem() {
   document.getElementById('agenda-desc').value = '';
 }
 
-function removeAgenda(i) {
-  data.agenda.splice(i, 1);
-  saveAll(); render();
-}
+function removeAgenda(i) { data.agenda.splice(i, 1); saveAll(); render(); }
 
 function renderHosts() {
   const el = document.getElementById('hosts-list');
   el.innerHTML = data.hosts.map((h, i) => `
     <div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">
       <span class="badge ${h.role === 'parent' ? 'badge-pink' : 'badge-purple'}">
-        ${h.role === 'parent' ? 'Родитель' : 'Друг'}
+        ${h.role === 'parent' ? t('badgeParent') : t('badgeFriend')}
       </span>
       <span>${esc(h.name)}</span>
       <button class="btn-danger btn-sm" onclick="removeHost(${i})">✕</button>
@@ -557,11 +786,9 @@ function getGiftGivers() {
   const givers = [];
   const inGroup = new Set(data.siblingGroups.flat());
   data.children.forEach((c, i) => {
-    if (!inGroup.has(i)) {
-      givers.push({ label: c.name, type: 'child', indices: [i] });
-    }
+    if (!inGroup.has(i)) givers.push({ label: c.name, type: 'child', indices: [i] });
   });
-  data.siblingGroups.forEach((g, i) => {
+  data.siblingGroups.forEach((g) => {
     const names = g.map(idx => data.children[idx]?.name || '?').join(' + ');
     givers.push({ label: names, type: 'group', indices: g });
   });
@@ -582,23 +809,23 @@ function renderWishlist() {
         <div class="wishlist-info">
           <strong>${w.url ? `<a href="${esc(w.url)}" target="_blank">${esc(w.name)}</a>` : esc(w.name)}</strong>
           ${w.note ? `<div style="font-size:0.85rem;color:var(--text-muted);">${esc(w.note)}</div>` : ''}
-          ${booked ? `<div><span class="badge badge-green">🎁 Забронировано: ${esc(bookerLabel)}</span></div>` : ''}
+          ${booked ? `<div><span class="badge badge-green">🎁 ${t('booked')}: ${esc(bookerLabel)}</span></div>` : ''}
         </div>
         <div class="wishlist-actions">
           ${!booked ? `
             <select onchange="bookWish(${i}, this.value)" style="width:auto;margin:0;">
-              <option value="">Забронировать...</option>
+              <option value="">${t('book')}</option>
               ${givers.map((g, gi) => `<option value="${gi}">${esc(g.label)}</option>`).join('')}
-              <option value="__custom">Другой...</option>
+              <option value="__custom">${t('bookOther')}</option>
             </select>
           ` : `
-            <button class="btn-secondary btn-sm" onclick="unbookWish(${i})">Отменить</button>
+            <button class="btn-secondary btn-sm" onclick="unbookWish(${i})">${t('cancel')}</button>
           `}
           <button class="btn-danger btn-sm" onclick="removeWish(${i})">✕</button>
         </div>
       </div>
     `;
-  }).join('') || '<p style="color:var(--text-muted)">Виш-лист пуст</p>';
+  }).join('') || `<p style="color:var(--text-muted)">${t('wishEmpty')}</p>`;
 }
 
 function addWish() {
@@ -615,7 +842,7 @@ function addWish() {
 
 function bookWish(i, val) {
   if (val === '__custom') {
-    const name = prompt('Введите имя:');
+    const name = prompt(t('promptName'));
     if (name) { data.wishlist[i].bookedBy = name; saveAll(); render(); }
     return;
   }
@@ -630,18 +857,18 @@ function removeWish(i) { data.wishlist.splice(i, 1); saveAll(); render(); }
 function renderOrg() {
   const hosts = data.hosts.filter(h => h.role === 'parent' || h.role === 'friend');
   const el = document.getElementById('org-tasks');
-  el.innerHTML = data.orgTasks.map((t, i) => `
-    <div class="checklist-item ${t.done ? 'done' : ''}">
-      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleOrgTask(${i})" style="width:auto;">
-      <label>${esc(t.task)}</label>
-      ${t.assignee ? `<span class="badge badge-purple">${esc(t.assignee)}</span>` : ''}
+  el.innerHTML = data.orgTasks.map((t_, i) => `
+    <div class="checklist-item ${t_.done ? 'done' : ''}">
+      <input type="checkbox" ${t_.done ? 'checked' : ''} onchange="toggleOrgTask(${i})" style="width:auto;">
+      <label>${esc(t_.task)}</label>
+      ${t_.assignee ? `<span class="badge badge-purple">${esc(t_.assignee)}</span>` : ''}
       <button class="btn-danger btn-sm" onclick="removeOrgTask(${i})">✕</button>
     </div>
-  `).join('') || '<p style="color:var(--text-muted)">Нет задач</p>';
+  `).join('') || `<p style="color:var(--text-muted)">${t('orgNoTasks')}</p>`;
 
   const sel = document.getElementById('org-assignee');
   const current = sel.value;
-  sel.innerHTML = '<option value="">Кто?</option>' +
+  sel.innerHTML = `<option value="">${t('orgWho')}</option>` +
     hosts.map(h => `<option value="${esc(h.name)}">${esc(h.name)}</option>`).join('');
   sel.value = current;
 
@@ -664,7 +891,7 @@ function saveOrgNotes() { data.orgNotes = document.getElementById('org-notes').v
 function updateSelects() {
   const childSel = document.getElementById('parent-child');
   const current = childSel.value;
-  childSel.innerHTML = '<option value="">Выберите ребёнка...</option>' +
+  childSel.innerHTML = `<option value="">${t('selectChild')}</option>` +
     data.children.map((c, i) => `<option value="${i}">${esc(c.name)}</option>`).join('');
   childSel.value = current;
 
@@ -678,6 +905,7 @@ function esc(s) {
   return d.innerHTML;
 }
 
+applyLang();
 render();
 </script>
 </body>
